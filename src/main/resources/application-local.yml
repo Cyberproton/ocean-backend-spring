@@ -9,6 +9,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+app:
+  env: development
 jwt:
   secret: ${JWT_SECRET}
   expirationInMilliseconds: 86400000
+auth:
+  disableCsrf: true

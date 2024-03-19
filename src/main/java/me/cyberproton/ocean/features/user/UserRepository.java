@@ -1,4 +1,4 @@
-package me.cyberproton.ocean.user;
+package me.cyberproton.ocean.features.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

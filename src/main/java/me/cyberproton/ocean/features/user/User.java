@@ -1,13 +1,19 @@
-package me.cyberproton.ocean.user;
+package me.cyberproton.ocean.features.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "_user") // user is a reserved keyword in PostgreSQL
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue

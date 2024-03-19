@@ -1,7 +1,7 @@
-package me.cyberproton.ocean.auth;
+package me.cyberproton.ocean.config;
 
 import lombok.AllArgsConstructor;
-import me.cyberproton.ocean.user.User;
+import me.cyberproton.ocean.features.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,10 +10,6 @@ import java.util.Collection;
 @AllArgsConstructor
 public class AppUserDetails implements UserDetails {
     private final User user;
-
-    public Long getId() {
-        return user.getId();
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,7 +1,6 @@
-package me.cyberproton.ocean.common;
+package me.cyberproton.ocean.annotations;
 
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.annotation.*;
@@ -10,7 +9,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @RestController
-@RequestMapping("/api/v1")
 public @interface V1ApiController {
     @AliasFor(annotation = RestController.class)
     String value() default "";

@@ -1,10 +1,12 @@
-package me.cyberproton.ocean.auth;
+package me.cyberproton.ocean.features.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.Nullable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -21,29 +23,34 @@ public class JwtService {
         this.jwtParser = Jwts.parser().verifyWith(getSecretKey()).build();
     }
 
-    public long getUserIdFromToken(String token) {
-        Jws<Claims> claims = parseToken(token).accept(Jws.CLAIMS);
-        return Long.parseLong(claims.getPayload().getSubject());
+    @Nullable
+    public String getUsernameFromToken(String token) {
+        try {
+            Jws<Claims> claims = parseToken(token).accept(Jws.CLAIMS);
+            return claims.getPayload().getSubject();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public String generateToken(Long userId, Map<String, ?> extraClaims) {
+    public String generateToken(String username, Map<String, ?> extraClaims) {
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(userId.toString())
+                .subject(username)
                 .signWith(getSecretKey())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtConfig.expirationInMilliseconds()))
                 .compact();
     }
 
-    public String generateToken(Long userId) {
-        return generateToken(userId, Map.of());
+    public String generateToken(String username) {
+        return generateToken(username, Map.of());
     }
 
-    public boolean isTokenValid(String token, AppUserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
-            long userId = getUserIdFromToken(token);
-            return userId == userDetails.getId() && !isTokenExpired(token);
+            String username = getUsernameFromToken(token);
+            return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
         } catch (Exception e) {
             return false;
         }

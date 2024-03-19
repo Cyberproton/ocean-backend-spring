@@ -1,6 +1,6 @@
 package me.cyberproton.ocean;
 
-import me.cyberproton.ocean.user.UserRepository;
+import me.cyberproton.ocean.features.user.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
