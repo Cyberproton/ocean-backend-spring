@@ -16,3 +16,7 @@ jwt:
   expirationInMilliseconds: 86400000
 auth:
   disableCsrf: true
+token:
+  resetPassword:
+    intervalInMilliseconds: 30000
+    maxAgeInMilliseconds: 300000

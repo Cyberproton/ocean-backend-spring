@@ -1,4 +1,4 @@
-package me.cyberproton.ocean.features.auth;
+package me.cyberproton.ocean.features.auth.configs;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

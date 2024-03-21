@@ -11,6 +11,10 @@ import java.util.Collection;
 public class AppUserDetails implements UserDetails {
     private final User user;
 
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

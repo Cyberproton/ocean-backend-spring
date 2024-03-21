@@ -1,4 +1,4 @@
-package me.cyberproton.ocean.features.auth;
+package me.cyberproton.ocean.features.auth.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
-    private String accessToken;
+public class ResetPasswordResponse {
+    private String message;
 }

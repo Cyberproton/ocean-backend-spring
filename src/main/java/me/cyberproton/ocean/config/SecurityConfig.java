@@ -1,7 +1,7 @@
 package me.cyberproton.ocean.config;
 
 import lombok.RequiredArgsConstructor;
-import me.cyberproton.ocean.features.auth.ExternalAuthConfig;
+import me.cyberproton.ocean.features.auth.configs.ExternalAuthConfig;
 import me.cyberproton.ocean.features.jwt.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +30,7 @@ public class SecurityConfig {
                         csrf.disable();
                     }
                 })
+                .cors(cors -> cors.disable())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/auth/**").permitAll()

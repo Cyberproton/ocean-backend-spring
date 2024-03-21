@@ -1,4 +1,4 @@
-package me.cyberproton.ocean.features.auth;
+package me.cyberproton.ocean.features.auth.configs;
 
 import lombok.RequiredArgsConstructor;
 import me.cyberproton.ocean.config.AppUserDetails;
