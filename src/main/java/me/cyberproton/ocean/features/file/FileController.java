@@ -9,9 +9,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/files")
 public class FileController {
     private final FileService fileService;
-
-//    @GetMapping("/test")
-//    public void test() {
-//        fileService.test();
-//    }
 }

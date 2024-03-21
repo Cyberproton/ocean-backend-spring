@@ -20,3 +20,9 @@ token:
   resetPassword:
     intervalInMilliseconds: 30000
     maxAgeInMilliseconds: 300000
+file:
+  endpoint: ${FILE_ENDPOINT}
+  region: ${FILE_REGION}
+  bucket: ${FILE_BUCKET_NAME}
+  accessKey: ${FILE_ACCESS_KEY}
+  secretKey: ${FILE_SECRET_KEY}
