@@ -1,10 +1,8 @@
 package me.cyberproton.ocean.features.file;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.cyberproton.ocean.features.user.User;
@@ -13,12 +11,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class File {
+@Entity(name = "file")
+public class FileEntity {
     @Id
-    private String id;
+    @GeneratedValue
+    private Long id;
 
     private String name;
 
@@ -29,7 +29,7 @@ public class File {
     private Long size;
 
     @ManyToOne
-    private User user;
+    private User owner;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp

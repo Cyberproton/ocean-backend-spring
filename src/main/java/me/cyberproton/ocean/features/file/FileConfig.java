@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.transfer.s3.S3TransferManager;
 
 import java.net.URI;
 
@@ -23,9 +25,29 @@ public class FileConfig {
                 .endpointOverride(URI.create(externalFileConfig.endpoint()))
                 .credentialsProvider(
                         StaticCredentialsProvider.create(AwsBasicCredentials.create(
-                                "005c3f5a02aab230000000001",
-                                "K005iXlOW2kRoABm/bH1EXs0GnGDGWY"
+                                externalFileConfig.accessKey(),
+                                externalFileConfig.secretKey()
                         ))
                 ).build();
+    }
+
+    @Bean
+    public S3AsyncClient s3AsyncClient() {
+        System.out.println(externalFileConfig);
+        return S3AsyncClient
+                .builder()
+                .region(Region.of(externalFileConfig.region()))
+                .endpointOverride(URI.create(externalFileConfig.endpoint()))
+                .credentialsProvider(
+                        StaticCredentialsProvider.create(AwsBasicCredentials.create(
+                                externalFileConfig.accessKey(),
+                                externalFileConfig.secretKey()
+                        ))
+                ).build();
+    }
+
+    @Bean
+    public S3TransferManager s3TransferManager(S3AsyncClient s3Client) {
+        return S3TransferManager.builder().s3Client(s3Client).build();
     }
 }
