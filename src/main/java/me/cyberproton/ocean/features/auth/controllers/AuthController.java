@@ -1,7 +1,7 @@
 package me.cyberproton.ocean.features.auth.controllers;
 
 import lombok.AllArgsConstructor;
-import me.cyberproton.ocean.annotations.V1ApiController;
+import me.cyberproton.ocean.annotations.V1ApiRestController;
 import me.cyberproton.ocean.features.auth.dtos.*;
 import me.cyberproton.ocean.features.auth.services.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @AllArgsConstructor
-@V1ApiController
+@V1ApiRestController
 @RequestMapping("auth")
 public class AuthController {
     private final AuthService authService;
