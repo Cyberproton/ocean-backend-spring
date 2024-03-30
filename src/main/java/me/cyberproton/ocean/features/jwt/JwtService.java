@@ -24,7 +24,7 @@ public class JwtService {
     }
 
     @Nullable
-    public String getUsernameFromToken(String token) {
+    public String getEmailFromToken(String token) {
         try {
             Jws<Claims> claims = parseToken(token).accept(Jws.CLAIMS);
             return claims.getPayload().getSubject();
@@ -33,23 +33,23 @@ public class JwtService {
         }
     }
 
-    public String generateToken(String username, Map<String, ?> extraClaims) {
+    public String generateToken(String email, Map<String, ?> extraClaims) {
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(username)
+                .subject(email)
                 .signWith(getSecretKey())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtConfig.expirationInMilliseconds()))
                 .compact();
     }
 
-    public String generateToken(String username) {
-        return generateToken(username, Map.of());
+    public String generateToken(String email) {
+        return generateToken(email, Map.of());
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
-            String username = getUsernameFromToken(token);
+            String username = getEmailFromToken(token);
             return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
         } catch (Exception e) {
             return false;

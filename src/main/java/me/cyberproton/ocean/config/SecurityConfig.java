@@ -30,7 +30,11 @@ public class SecurityConfig {
                         csrf.disable();
                     }
                 })
-                .cors(cors -> cors.disable())
+                .cors(cors -> {
+                    if (externalAuthConfig.disableCors()) {
+                        cors.disable();
+                    }
+                })
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/auth/**").permitAll()

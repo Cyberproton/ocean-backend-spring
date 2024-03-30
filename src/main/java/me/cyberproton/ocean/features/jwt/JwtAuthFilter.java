@@ -33,14 +33,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        String username = jwtService.getUsernameFromToken(token);
+        String email = jwtService.getEmailFromToken(token);
 
-        if (username == null) {
+        if (email == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        var userDetails = userDetailsService.loadUserByUsername(username);
+        var userDetails = userDetailsService.loadUserByUsername(email);
         if (userDetails == null) {
             filterChain.doFilter(request, response);
             return;
