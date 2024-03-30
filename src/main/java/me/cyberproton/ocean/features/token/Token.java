@@ -10,11 +10,11 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
-@Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Token {
     @Id
     @GeneratedValue
@@ -23,6 +23,9 @@ public class Token {
     private TokenType type;
 
     private String token;
+
+    // This is the only difference between EmailToken and Token
+    private String email;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp

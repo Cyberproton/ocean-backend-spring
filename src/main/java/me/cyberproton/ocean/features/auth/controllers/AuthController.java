@@ -2,9 +2,11 @@ package me.cyberproton.ocean.features.auth.controllers;
 
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.annotations.V1ApiRestController;
+import me.cyberproton.ocean.config.AppUserDetails;
 import me.cyberproton.ocean.features.auth.dtos.*;
 import me.cyberproton.ocean.features.auth.services.AuthService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +27,19 @@ public class AuthController {
         return authService.register(registerRequest);
     }
 
+    @PostMapping("/verify-email/request")
+    public RequestVerifyEmailResponse verifyEmail(@AuthenticationPrincipal AppUserDetails userDetails) {
+        return authService.requestVerifyEmail(userDetails.getUser());
+    }
+
+    @PostMapping("/verify-email/confirm")
+    public ConfirmVerifyEmailResponse verifyEmail(@RequestBody ConfirmVerifyEmailRequest request, @AuthenticationPrincipal AppUserDetails userDetails) {
+        return authService.verifyEmail(userDetails.getUser(), request);
+    }
+
     @PostMapping("/reset-password/request")
-    public ResetPasswordResponse resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
-        return authService.resetPassword(resetPasswordRequest);
+    public ResetPasswordResponse requestResetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        return authService.requestResetPassword(resetPasswordRequest);
     }
 
     @PostMapping("/reset-password/confirm")

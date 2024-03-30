@@ -27,7 +27,6 @@ public class FileController {
             @RequestPart("attachment") MultipartFile file,
             @AuthenticationPrincipal AppUserDetails userDetails
     ) {
-        System.out.println(file);
         return fileService.uploadFileToDefaultBucket(file, userDetails.getUser());
     }
 

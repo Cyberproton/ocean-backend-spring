@@ -33,7 +33,6 @@ public class FileConfig {
 
     @Bean
     public S3AsyncClient s3AsyncClient() {
-        System.out.println(externalFileConfig);
         return S3AsyncClient
                 .builder()
                 .region(Region.of(externalFileConfig.region()))

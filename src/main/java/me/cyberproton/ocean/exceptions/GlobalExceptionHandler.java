@@ -38,6 +38,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAnyException(Exception ex, HttpServletRequest request) {
+        // Log the exception
+        logger.error("An exception occurred", ex);
+
         String message = ex.getMessage();
         ErrorMessage error = ErrorMessage.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())

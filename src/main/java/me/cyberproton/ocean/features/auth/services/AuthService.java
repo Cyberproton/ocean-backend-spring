@@ -2,13 +2,16 @@ package me.cyberproton.ocean.features.auth.services;
 
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.features.auth.dtos.*;
+import me.cyberproton.ocean.features.email.EmailService;
+import me.cyberproton.ocean.features.email.EmailTemplateRequest;
+import me.cyberproton.ocean.features.email.EmailTemplates;
 import me.cyberproton.ocean.features.jwt.JwtService;
-import me.cyberproton.ocean.features.token.Token;
-import me.cyberproton.ocean.features.token.TokenConfig;
-import me.cyberproton.ocean.features.token.TokenService;
-import me.cyberproton.ocean.features.token.TokenType;
+import me.cyberproton.ocean.features.token.*;
 import me.cyberproton.ocean.features.user.User;
 import me.cyberproton.ocean.features.user.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -28,51 +33,107 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final TokenConfig tokenConfig;
+    private final EmailService emailService;
+    @Qualifier(value = "emailMessageSource")
+    private final MessageSource messageSource;
 
     public LoginResponse register(RegisterRequest registerRequest) {
         User user = User.builder()
+                .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build();
         userRepository.save(user);
+        emailService.sendEmailUsingTemplate(
+                EmailTemplateRequest.builder()
+                        .to(user.getEmail())
+                        .subject(messageSource.getMessage("welcome.subject", null, LocaleContextHolder.getLocale()))
+                        .template(EmailTemplates.WELCOME)
+                        .model(Map.of(
+                                "recipientName", user.getUsername()
+                        ))
+                        .build()
+        );
         String token = jwtService.generateToken(user.getUsername());
         return LoginResponse.builder().accessToken(token).build();
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        var user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow();
-        String token = jwtService.generateToken(user.getUsername());
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+        var user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
+        String token = jwtService.generateToken(user.getEmail());
         return LoginResponse.builder().accessToken(token).build();
     }
 
-    public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    public ResetPasswordResponse requestResetPassword(ResetPasswordRequest resetPasswordRequest) {
         String usernameOrEmail = resetPasswordRequest.getUsernameOrEmail();
         User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).orElseThrow();
-        Optional<Token> latestTokenOpt = tokenService.findLatestToken(user, TokenType.RESET_PASSWORD);
+        Optional<Token> latestTokenOpt = tokenService.findLatestToken(user, TokenType.PASSWORD_RESET);
         latestTokenOpt.ifPresent((latestToken) -> {
-            if (latestToken.getCreatedAt().toInstant().plusMillis(tokenConfig.resetPassword().intervalInMilliseconds()).isAfter(Instant.now())) {
+            if (latestToken.getCreatedAt().toInstant().plusMillis(tokenConfig.passwordReset().intervalInMilliseconds()).isAfter(Instant.now())) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
-                        "Please wait for %s seconds before requesting another reset password".formatted(tokenConfig.resetPassword().intervalInMilliseconds() / 1000)
+                        "Please wait for %s seconds before requesting another reset password".formatted(tokenConfig.passwordReset().intervalInMilliseconds() / 1000)
                 );
             }
         });
-        Token token = tokenService.createToken(user, TokenType.RESET_PASSWORD);
+        TokenResult token = tokenService.createToken(user, TokenType.PASSWORD_RESET);
+        emailService.sendEmailUsingTemplate(EmailTemplateRequest.builder()
+                .to(user.getEmail())
+                .subject(messageSource.getMessage("password.reset.subject", null, LocaleContextHolder.getLocale()))
+                .template(EmailTemplates.PASSWORD_RESET)
+                .model(Map.of(
+                        "recipientName", Objects.requireNonNullElse(user.getUsername(), user.getEmail()),
+                        "token", token.rawToken(),
+                        "expiryInMinutes", tokenConfig.passwordReset().maxAgeInMilliseconds() / 60000
+                ))
+                .build()
+        );
         return ResetPasswordResponse.builder().build();
     }
 
     public ConfirmResetPasswordResponse confirmResetPassword(ConfirmResetPasswordRequest confirmResetPasswordRequest) {
         User user = userRepository.findByUsernameOrEmail(confirmResetPasswordRequest.getUsernameOrEmail(), confirmResetPasswordRequest.getUsernameOrEmail()).orElseThrow();
-        boolean matched = tokenService.validateToken(user, confirmResetPasswordRequest.getToken(), TokenType.RESET_PASSWORD);
-        if (!matched) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid token"
-            );
-        }
+        tokenService.validateToken(user, confirmResetPasswordRequest.getToken(), TokenType.PASSWORD_RESET);
         user.setPassword(passwordEncoder.encode(confirmResetPasswordRequest.getNewPassword()));
         userRepository.save(user);
         return ConfirmResetPasswordResponse.builder().message("Password reset successfully").build();
+    }
+
+    public RequestVerifyEmailResponse requestVerifyEmail(User user) {
+        Optional<Token> latestTokenOpt = tokenService.findLatestToken(user, TokenType.EMAIL_VERIFICATION);
+        latestTokenOpt.ifPresent((latestToken) -> {
+            if (latestToken.getCreatedAt().toInstant().plusMillis(tokenConfig.emailVerification().intervalInMilliseconds()).isAfter(Instant.now())) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Please wait for %s seconds before requesting another verify email".formatted(tokenConfig.emailVerification().intervalInMilliseconds() / 1000)
+                );
+            }
+        });
+        TokenResult token = tokenService.createEmailVerificationToken(user, user.getEmail());
+        emailService.sendEmailUsingTemplate(EmailTemplateRequest.builder()
+                .to(user.getEmail())
+                .subject(messageSource.getMessage("email.verification.subject", null, LocaleContextHolder.getLocale()))
+                .template(EmailTemplates.EMAIL_VERIFICATION)
+                .model(Map.of(
+                        "recipientName", Objects.requireNonNullElse(user.getUsername(), user.getEmail()),
+                        "token", token.rawToken(),
+                        "expiryInMinutes", tokenConfig.emailVerification().maxAgeInMilliseconds() / 60000
+                ))
+                .build()
+        );
+        return RequestVerifyEmailResponse.builder().email(user.getEmail()).build();
+    }
+
+    public ConfirmVerifyEmailResponse verifyEmail(User user, ConfirmVerifyEmailRequest request) {
+        Token token = tokenService.validateToken(user, request.token(), TokenType.EMAIL_VERIFICATION);
+        user.setEmailVerified(true);
+        userRepository.save(user);
+        return ConfirmVerifyEmailResponse.builder().email(token.getEmail()).build();
     }
 }

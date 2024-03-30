@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <title th:text="${subject}"></title>
+</head>
+<body>
+<p th:text="#{greetings(${recipientName})}"></p>
+<p th:text="#{email.verification.instructions}"></p>
+<p th:text="#{email.verification.token(${token})}"></p>
+<p th:text="#{email.verification.token.expiry(${expiryInMinutes})}"></p>
+<p th:text="#{regards}"></p>
+</body>
+</html>
