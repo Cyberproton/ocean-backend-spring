@@ -31,6 +31,9 @@ public class ResponseBodyTransformAdvice implements ResponseBodyAdvice<Object> {
             @Nonnull ServerHttpRequest request,
             @Nonnull ServerHttpResponse response
     ) {
+        if (body == null) {
+            return null;
+        }
         if (response instanceof ServletServerHttpResponse servletServerHttpResponse) {
             int status = servletServerHttpResponse.getServletResponse().getStatus();
             if (status >= 200 && status < 300) {
