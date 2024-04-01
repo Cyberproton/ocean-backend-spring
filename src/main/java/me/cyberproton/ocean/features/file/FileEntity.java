@@ -28,6 +28,8 @@ public class FileEntity {
 
     private Long size;
 
+    private boolean isPublic;
+
     @ManyToOne
     private User owner;
 

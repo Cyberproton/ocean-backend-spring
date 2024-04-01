@@ -1,11 +1,13 @@
 package me.cyberproton.ocean.features.auth.services;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.features.auth.dtos.*;
 import me.cyberproton.ocean.features.email.EmailService;
 import me.cyberproton.ocean.features.email.EmailTemplateRequest;
 import me.cyberproton.ocean.features.email.EmailTemplates;
 import me.cyberproton.ocean.features.jwt.JwtService;
+import me.cyberproton.ocean.features.role.RoleRepository;
 import me.cyberproton.ocean.features.token.*;
 import me.cyberproton.ocean.features.user.User;
 import me.cyberproton.ocean.features.user.UserRepository;
@@ -28,6 +30,7 @@ import java.util.Optional;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -37,12 +40,14 @@ public class AuthService {
     @Qualifier(value = "emailMessageSource")
     private final MessageSource messageSource;
 
+    @Transactional
     public LoginResponse register(RegisterRequest registerRequest) {
         User user = User.builder()
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build();
+        roleRepository.findByName("USER").ifPresent(user::addRole);
         userRepository.save(user);
         emailService.sendEmailUsingTemplate(
                 EmailTemplateRequest.builder()
@@ -50,7 +55,7 @@ public class AuthService {
                         .subject(messageSource.getMessage("welcome.subject", null, LocaleContextHolder.getLocale()))
                         .template(EmailTemplates.WELCOME)
                         .model(Map.of(
-                                "recipientName", user.getUsername()
+                                "recipientName", Objects.requireNonNullElse(user.getUsername(), user.getEmail())
                         ))
                         .build()
         );

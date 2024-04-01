@@ -28,20 +28,11 @@ public class FileService {
     private final ExternalFileConfig externalFileConfig;
     private final FileRepository fileRepository;
 
-    public FileResponse getFile(Long id) {
-        FileEntity file = fileRepository.findById(id).orElseThrow();
-        return FileResponse.builder()
-                .id(file.getId())
-                .name(file.getName())
-                .mimetype(file.getMimetype())
-                .path(file.getPath())
-                .size(file.getSize())
-                .owner(file.getOwner().getId())
-                .createdAt(file.getCreatedAt().toString())
-                .build();
+    public FileEntity getFile(Long id) {
+        return fileRepository.findById(id).orElseThrow();
     }
 
-    public FileResponse uploadFile(String bucket, MultipartFile file, User owner) {
+    public FileEntity uploadFile(String bucket, MultipartFile file, User owner) {
         FileEntity res = fileRepository.save(
                 FileEntity.builder()
                         .path(bucket)
@@ -68,18 +59,10 @@ public class FileService {
         } catch (Exception e) {
             log.error("Failed to upload file", e);
         }
-        return FileResponse.builder()
-                .id(res.getId())
-                .name(res.getName())
-                .mimetype(res.getMimetype())
-                .path(res.getPath())
-                .size(res.getSize())
-                .owner(res.getOwner().getId())
-                .createdAt(res.getCreatedAt().toString())
-                .build();
+        return res;
     }
 
-    public FileResponse uploadFileToDefaultBucket(MultipartFile file, User owner) {
+    public FileEntity uploadFileToDefaultBucket(MultipartFile file, User owner) {
         return uploadFile(externalFileConfig.bucket(), file, owner);
     }
 

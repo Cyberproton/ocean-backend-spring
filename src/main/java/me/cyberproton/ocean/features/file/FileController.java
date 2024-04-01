@@ -19,7 +19,16 @@ public class FileController {
 
     @GetMapping("/{id}")
     public FileResponse getFile(@PathVariable Long id) {
-        return fileService.getFile(id);
+        FileEntity file = fileService.getFile(id);
+        return FileResponse.builder()
+                .id(file.getId())
+                .name(file.getName())
+                .mimetype(file.getMimetype())
+                .path(file.getPath())
+                .size(file.getSize())
+                .owner(file.getOwner().getId())
+                .createdAt(file.getCreatedAt().toString())
+                .build();
     }
 
     @PostMapping("/upload")
@@ -27,7 +36,16 @@ public class FileController {
             @RequestPart("attachment") MultipartFile file,
             @AuthenticationPrincipal AppUserDetails userDetails
     ) {
-        return fileService.uploadFileToDefaultBucket(file, userDetails.getUser());
+        FileEntity res = fileService.uploadFileToDefaultBucket(file, userDetails.getUser());
+        return FileResponse.builder()
+                .id(res.getId())
+                .name(res.getName())
+                .mimetype(res.getMimetype())
+                .path(res.getPath())
+                .size(res.getSize())
+                .owner(res.getOwner().getId())
+                .createdAt(res.getCreatedAt().toString())
+                .build();
     }
 
     @GetMapping("/download/{id}")
@@ -38,7 +56,7 @@ public class FileController {
                         outputStream,
                         true
                 );
-        FileResponse file = fileService.getFile(id);
+        FileEntity file = fileService.getFile(id);
         return ResponseEntity.ok().headers(b -> {
             b.setContentLength(file.getSize());
             b.setContentType(MediaType.parseMediaType(file.getMimetype()));

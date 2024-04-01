@@ -1,5 +1,6 @@
 package me.cyberproton.ocean.features.auth.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.annotations.V1ApiRestController;
 import me.cyberproton.ocean.config.AppUserDetails;
@@ -18,12 +19,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
     @PostMapping("/register")
-    public LoginResponse register(@RequestBody RegisterRequest registerRequest) {
+    public LoginResponse register(@Valid @RequestBody RegisterRequest registerRequest) {
         return authService.register(registerRequest);
     }
 
@@ -38,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password/request")
-    public ResetPasswordResponse requestResetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public ResetPasswordResponse requestResetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         return authService.requestResetPassword(resetPasswordRequest);
     }
 
