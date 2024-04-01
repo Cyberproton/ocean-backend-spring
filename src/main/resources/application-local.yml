@@ -33,6 +33,7 @@ logging:
     me.cyberproton: DEBUG
 app:
   env: development
+  domain: ${APP_DOMAIN}
 jwt:
   secret: ${JWT_SECRET}
   expirationInMilliseconds: 86400000

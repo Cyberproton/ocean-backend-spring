@@ -28,6 +28,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-mail:3.2.4")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.4")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation(platform("software.amazon.awssdk:bom:2.20.56"))
     implementation("software.amazon.awssdk:s3")
     implementation("software.amazon.awssdk:s3-transfer-manager:2.25.16")
