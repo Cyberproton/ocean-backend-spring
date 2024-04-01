@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,4 +17,6 @@ public class UserResponse {
     private String email;
     private boolean isLocked;
     private boolean isEmailVerified;
+    private Set<UserResponse> following;
+    private Set<UserResponse> followers;
 }
