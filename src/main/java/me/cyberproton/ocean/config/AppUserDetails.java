@@ -15,6 +15,10 @@ public class AppUserDetails implements UserDetails {
         return user;
     }
 
+    public Long getUserId() {
+        return user.getId();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
