@@ -1,13 +1,11 @@
-package me.cyberproton.ocean.features.album;
+package me.cyberproton.ocean.features.copyright;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.cyberproton.ocean.features.album.Album;
 
 import java.util.Set;
 
@@ -23,7 +21,8 @@ public class Copyright {
 
     private String text;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private CopyrightType type;
 
     @ManyToMany(mappedBy = "copyrights")
     private Set<Album> albums;
