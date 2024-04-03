@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.cyberproton.ocean.features.copyright.Copyright;
 import me.cyberproton.ocean.features.file.FileEntity;
+import me.cyberproton.ocean.features.recordlabel.RecordLabel;
+import me.cyberproton.ocean.features.track.Track;
 
 import java.util.Date;
 import java.util.Set;
@@ -43,4 +46,7 @@ public class Album {
 
     @ManyToOne
     private RecordLabel recordLabel;
+
+    @OneToMany
+    private Set<Track> tracks;
 }
