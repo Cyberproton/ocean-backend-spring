@@ -27,7 +27,7 @@ public class FileController {
                 .path(file.getPath())
                 .size(file.getSize())
                 .owner(file.getOwner().getId())
-                .createdAt(file.getCreatedAt().toString())
+                .createdAt(file.getCreatedAt())
                 .build();
     }
 
@@ -44,18 +44,18 @@ public class FileController {
                 .path(res.getPath())
                 .size(res.getSize())
                 .owner(res.getOwner().getId())
-                .createdAt(res.getCreatedAt().toString())
+                .createdAt(res.getCreatedAt())
                 .build();
     }
 
     @GetMapping("/download/{id}")
     public ResponseEntity<StreamingResponseBody> download(@PathVariable Long id) {
-        StreamingResponseBody responseBody =
-                outputStream -> fileService.downloadAndStreamToOutput(
-                        id,
-                        outputStream,
-                        true
-                );
+        StreamingResponseBody responseBody = fileService.streamToStreamingResponseBody(
+                StreamFileToBodyRequest
+                        .builder()
+                        .id(id)
+                        .build()
+        );
         FileEntity file = fileService.getFile(id);
         return ResponseEntity.ok().headers(b -> {
             b.setContentLength(file.getSize());

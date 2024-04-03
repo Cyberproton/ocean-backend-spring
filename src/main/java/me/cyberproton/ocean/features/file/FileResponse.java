@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,5 +18,6 @@ public class FileResponse {
     private String path;
     private Long size;
     private Long owner;
-    private String createdAt;
+    private boolean isPublic;
+    private Date createdAt;
 }

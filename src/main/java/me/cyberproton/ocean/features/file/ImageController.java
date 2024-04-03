@@ -18,12 +18,12 @@ public class ImageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StreamingResponseBody> getById(@PathVariable Long id) {
-        StreamingResponseBody responseBody =
-                outputStream -> fileService.downloadAndStreamToOutput(
-                        id,
-                        outputStream,
-                        true
-                );
+        StreamingResponseBody responseBody = fileService.streamToStreamingResponseBody(
+                StreamFileToBodyRequest
+                        .builder()
+                        .id(id)
+                        .build()
+        );
         FileEntity file = fileService.getFile(id);
         return ResponseEntity.ok().headers(b -> {
             b.setContentLength(file.getSize());

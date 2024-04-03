@@ -6,6 +6,7 @@ import me.cyberproton.ocean.features.user.User;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -15,7 +16,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 
 @Log4j2
 @AllArgsConstructor
@@ -66,15 +66,12 @@ public class FileService {
         return uploadFile(externalFileConfig.bucket(), file, owner);
     }
 
-    public void downloadAndStreamToOutput(
-            Long id,
-            OutputStream outputStream,
-            boolean closeStreamAfterTransfer
-    ) {
-        FileEntity file = fileRepository.findById(id).orElseThrow();
+    public void streamToOutputStream(StreamFileToOutputStreamRequest request) {
+        FileEntity file = fileRepository.findById(request.id()).orElseThrow();
         var download = s3AsyncClient.getObject(
                 GetObjectRequest
                         .builder()
+                        .range(request.range())
                         .bucket(file.getPath())
                         .key(file.getId().toString()).build(),
                 AsyncResponseTransformer.toBlockingInputStream()
@@ -82,14 +79,25 @@ public class FileService {
         // Input stream from s3 will automatically close after transferTo
         try {
             var res = download.join();
-            res.transferTo(outputStream);
+            res.transferTo(request.outputStream());
             // Close the output stream after transferTo
-            if (closeStreamAfterTransfer) {
-                outputStream.close();
+            if (request.closeStreamAfterFinish()) {
+                request.outputStream().close();
             }
             res.close();
         } catch (Exception e) {
             log.error("Failed to stream file", e);
         }
+    }
+
+    public StreamingResponseBody streamToStreamingResponseBody(StreamFileToBodyRequest request) {
+        return outputStream -> streamToOutputStream(
+                StreamFileToOutputStreamRequest.builder()
+                        .id(request.id())
+                        .range(request.range())
+                        .outputStream(outputStream)
+                        .closeStreamAfterFinish(true)
+                        .build()
+        );
     }
 }
