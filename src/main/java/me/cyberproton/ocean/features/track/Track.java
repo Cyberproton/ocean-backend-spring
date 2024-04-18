@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.cyberproton.ocean.features.album.Album;
 import me.cyberproton.ocean.features.artist.Artist;
+import me.cyberproton.ocean.features.file.FileEntity;
+import me.cyberproton.ocean.features.genre.Genre;
+import me.cyberproton.ocean.features.playlist.PlaylistTrack;
 
 import java.util.Set;
 
@@ -15,6 +18,7 @@ import java.util.Set;
 @Data
 @Builder
 @Entity
+@EntityListeners(TrackListener.class)
 public class Track {
     @Id
     @GeneratedValue
@@ -25,6 +29,18 @@ public class Track {
     private Integer trackNumber;
 
     private Long duration;
+
+    @OneToOne
+    private FileEntity file;
+
+    @ManyToMany
+    @JoinTable(
+            name = "track_genres",
+            joinColumns = @JoinColumn(
+                    name = "track_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "genre_id", referencedColumnName = "id"))
+    private Set<Genre> genres;
 
     @ManyToOne(optional = false)
     private Album album;
@@ -37,6 +53,9 @@ public class Track {
             inverseJoinColumns = @JoinColumn(
                     name = "artist_id", referencedColumnName = "id"))
     private Set<Artist> artists;
+
+    @OneToMany(mappedBy = "track", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<PlaylistTrack> playlistTracks;
 
     public void addArtist(Artist artist) {
         artists.add(artist);

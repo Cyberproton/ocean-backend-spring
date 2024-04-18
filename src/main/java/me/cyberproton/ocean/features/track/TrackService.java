@@ -5,6 +5,7 @@ import me.cyberproton.ocean.features.album.Album;
 import me.cyberproton.ocean.features.album.AlbumRepository;
 import me.cyberproton.ocean.features.artist.Artist;
 import me.cyberproton.ocean.features.artist.ArtistRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,6 +19,7 @@ public class TrackService {
     private final TrackRepository trackRepository;
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public Set<TrackResponse> getTracks() {
         return trackRepository.findAll()
@@ -46,6 +48,7 @@ public class TrackService {
                 .album(album)
                 .artists(artists)
                 .build();
+        eventPublisher.publishEvent(new TrackEvent(TrackEvent.Type.CREATE, track));
         return TrackResponse.fromEntity(trackRepository.save(track));
     }
 
@@ -63,11 +66,16 @@ public class TrackService {
         track.setDuration(request.duration());
         track.setAlbum(album);
         track.setArtists(artists);
-        return TrackResponse.fromEntity(trackRepository.save(track));
+        Track saved = trackRepository.save(track);
+        eventPublisher.publishEvent(new TrackEvent(TrackEvent.Type.UPDATE, saved));
+        return TrackResponse.fromEntity(saved);
     }
 
     public Long deleteTrack(Long id) {
+        Track track = trackRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Track not found"));
         trackRepository.deleteById(id);
+        eventPublisher.publishEvent(new TrackEvent(TrackEvent.Type.DELETE, track));
         return id;
     }
 }

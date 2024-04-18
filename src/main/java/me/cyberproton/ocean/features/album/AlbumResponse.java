@@ -31,4 +31,16 @@ public record AlbumResponse(
                 .recordLabel(RecordLabelResponse.fromEntity(album.getRecordLabel()))
                 .build();
     }
+
+    public static AlbumResponse fromElasticsearchDocument(AlbumDocument albumDocument, ImageUrlMapper imageUrlMapper) {
+        return AlbumResponse.builder()
+                .id(albumDocument.getId())
+                .type(albumDocument.getType())
+                .name(albumDocument.getName())
+                .description(albumDocument.getDescription())
+                .releaseDate(albumDocument.getReleaseDate())
+                .cover(ImageResponse.fromFileId(albumDocument.getCoverId(), imageUrlMapper))
+                //.recordLabel(RecordLabelResponse.fromEntity(albumDocument.getRecordLabel()))
+                .build();
+    }
 }

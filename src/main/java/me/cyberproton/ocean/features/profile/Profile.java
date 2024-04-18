@@ -1,13 +1,11 @@
 package me.cyberproton.ocean.features.profile;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.cyberproton.ocean.features.artist.ArtistProfileListener;
 import me.cyberproton.ocean.features.file.FileEntity;
 import me.cyberproton.ocean.features.user.User;
 
@@ -16,6 +14,7 @@ import me.cyberproton.ocean.features.user.User;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(ArtistProfileListener.class)
 public class Profile {
     @Id
     @GeneratedValue

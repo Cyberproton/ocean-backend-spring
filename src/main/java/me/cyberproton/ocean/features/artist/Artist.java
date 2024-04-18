@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.cyberproton.ocean.features.track.Track;
+import me.cyberproton.ocean.features.user.User;
 
 import java.util.Set;
 
@@ -14,10 +15,14 @@ import java.util.Set;
 @Data
 @Builder
 @Entity
+@EntityListeners(ArtistListener.class)
 public class Artist {
     @Id
     @GeneratedValue
     private Long id;
+
+    @OneToOne
+    private User user;
 
     @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Track> tracks;

@@ -1,24 +1,24 @@
 package me.cyberproton.ocean.listener;
 
+import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.cyberproton.ocean.features.role.Role;
 import me.cyberproton.ocean.features.role.RoleRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
+//@Component
 public class CreateDefaultRoles implements ApplicationListener<ContextRefreshedEvent> {
+    private static boolean alreadySetup = false;
     private final RoleRepository roleRepository;
-    private final boolean alreadySetup = false;
 
     @Transactional
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
         if (alreadySetup) {
             return;
         }
@@ -30,5 +30,6 @@ public class CreateDefaultRoles implements ApplicationListener<ContextRefreshedE
                 Role.builder().name("ARTIST").build(),
                 Role.builder().name("ADMIN").build()
         ));
+        alreadySetup = true;
     }
 }

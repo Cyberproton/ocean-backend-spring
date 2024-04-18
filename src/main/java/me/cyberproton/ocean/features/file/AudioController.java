@@ -17,7 +17,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @V1ApiRestController
-@RequestMapping("/audio")
+@RequestMapping("/media")
 public class AudioController {
     private final FileService fileService;
 

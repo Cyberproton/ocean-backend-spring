@@ -15,7 +15,8 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLConnection;
 
 @Log4j2
 @AllArgsConstructor
@@ -33,36 +34,89 @@ public class FileService {
     }
 
     public FileEntity uploadFile(String bucket, MultipartFile file, User owner) {
+        try {
+            InputStream inputStream = file.getInputStream();
+            return uploadFileStream(
+                    bucket,
+                    file.getOriginalFilename(),
+                    inputStream,
+                    file.getContentType(),
+                    file.getSize(),
+                    owner
+            );
+        } catch (IOException e) {
+            log.error("Failed to upload file", e);
+        } finally {
+            try {
+                file.getInputStream().close();
+            } catch (IOException e) {
+                log.error("Failed to close input stream", e);
+            }
+        }
+        return null;
+    }
+
+    public FileEntity uploadFile(String bucket, File file, User owner) {
+        String mimetype = URLConnection.guessContentTypeFromName(file.getName());
+        try {
+            InputStream inputStream = new FileInputStream(file);
+            return uploadFileStream(
+                    bucket,
+                    file.getName(),
+                    inputStream,
+                    mimetype,
+                    file.length(),
+                    owner
+            );
+        } catch (FileNotFoundException e) {
+            log.error("Failed to upload file", e);
+        } finally {
+            try {
+                new FileInputStream(file).close();
+            } catch (IOException e) {
+                log.error("Failed to close input stream", e);
+            }
+        }
+        return null;
+    }
+
+    private FileEntity uploadFileStream(
+            String bucket,
+            String key,
+            InputStream inputStream,
+            String contentType,
+            long size,
+            User owner
+    ) {
         FileEntity res = fileRepository.save(
                 FileEntity.builder()
                         .path(bucket)
-                        .name(file.getOriginalFilename() == null ? "unknown" : file.getOriginalFilename())
-                        .size(file.getSize())
-                        .mimetype(file.getContentType() == null ? "application/octet-stream" : file.getContentType())
+                        .name(key)
+                        .size(size)
+                        .mimetype(contentType)
                         .owner(owner)
                         .build()
         );
-        try {
-            InputStream inputStream = file.getInputStream();
-            s3AsyncClient.putObject(
-                    PutObjectRequest
-                            .builder()
-                            .bucket(bucket)
-                            .key(res.getId().toString())
-                            .contentType(file.getContentType() == null ? "application/octet-stream" : file.getContentType())
-                            .build(),
-                    AsyncRequestBody.fromInputStream(inputStream, (long) inputStream.available(), threadPoolTaskExecutor.getThreadPoolExecutor())
-            ).exceptionally(e -> {
-                log.error("Failed to upload file", e);
-                return null;
-            });
-        } catch (Exception e) {
+        s3AsyncClient.putObject(
+                PutObjectRequest
+                        .builder()
+                        .bucket(bucket)
+                        .key(res.getId().toString())
+                        .contentType(contentType)
+                        .build(),
+                AsyncRequestBody.fromInputStream(inputStream, size, threadPoolTaskExecutor.getThreadPoolExecutor())
+        ).exceptionally(e -> {
             log.error("Failed to upload file", e);
-        }
+            return null;
+        });
         return res;
     }
 
     public FileEntity uploadFileToDefaultBucket(MultipartFile file, User owner) {
+        return uploadFile(externalFileConfig.bucket(), file, owner);
+    }
+
+    public FileEntity uploadFileToDefaultBucket(File file, User owner) {
         return uploadFile(externalFileConfig.bucket(), file, owner);
     }
 

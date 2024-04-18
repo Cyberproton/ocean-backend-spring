@@ -6,6 +6,7 @@ import me.cyberproton.ocean.features.copyright.CopyrightRepository;
 import me.cyberproton.ocean.features.recordlabel.RecordLabel;
 import me.cyberproton.ocean.features.recordlabel.RecordLabelRepository;
 import me.cyberproton.ocean.util.ImageUrlMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,6 +22,7 @@ public class AlbumService {
     private final RecordLabelRepository recordLabelRepository;
     private final CopyrightRepository copyrightRepository;
     private final ImageUrlMapper imageUrlMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     public Set<AlbumResponse> getAlbums() {
         return albumRepository
@@ -57,8 +59,9 @@ public class AlbumService {
                 .recordLabel(recordLabel)
                 .copyrights(Set.copyOf(copyrights))
                 .build();
-        albumRepository.save(album);
-        return AlbumResponse.builder().build();
+        Album saved = albumRepository.save(album);
+        eventPublisher.publishEvent(new AlbumEvent(AlbumEvent.Type.CREATE, saved));
+        return AlbumResponse.fromEntity(saved, imageUrlMapper);
     }
 
     public AlbumResponse updateAlbum(Long id, CreateOrUpdateAlbumRequest request) {
@@ -82,15 +85,16 @@ public class AlbumService {
         album.setReleaseDate(request.releaseDate());
         album.setRecordLabel(recordLabel);
         album.setCopyrights(Set.copyOf(copyrights));
-        albumRepository.save(album);
-        return AlbumResponse.fromEntity(album, imageUrlMapper);
+        Album saved = albumRepository.save(album);
+        eventPublisher.publishEvent(new AlbumEvent(AlbumEvent.Type.UPDATE, saved));
+        return AlbumResponse.fromEntity(saved, imageUrlMapper);
     }
 
-    public Long deleteAlbum(Long id) {
+    public void deleteAlbum(Long id) {
         Album album = albumRepository
                 .findById(id)
                 .orElseThrow();
         albumRepository.delete(album);
-        return album.getId();
+        eventPublisher.publishEvent(new AlbumEvent(AlbumEvent.Type.DELETE, album));
     }
 }

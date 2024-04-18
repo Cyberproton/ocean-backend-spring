@@ -18,6 +18,7 @@ import java.util.Set;
 @Data
 @Builder
 @Entity
+@EntityListeners(AlbumListener.class)
 public class Album {
     @Id
     @GeneratedValue
@@ -26,8 +27,10 @@ public class Album {
     @Enumerated(EnumType.STRING)
     private AlbumType type;
 
+    @Column(length = AlbumConstant.MAX_ALBUM_NAME_LENGTH)
     private String name;
 
+    @Column(length = AlbumConstant.MAX_ALBUM_DESCRIPTION_LENGTH)
     private String description;
 
     private Date releaseDate;
