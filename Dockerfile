@@ -5,7 +5,7 @@ WORKDIR /app
 COPY *.gradle.kts /app
 COPY src /app/src
 
-RUN gradle build --no-daemon
+RUN gradle build --no-daemon --project-prop org.gradle.welcome=false
 
 FROM openjdk:21-jdk-slim
 
