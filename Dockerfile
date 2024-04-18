@@ -2,10 +2,10 @@ FROM gradle:8.7.0-jdk21 AS build
 
 WORKDIR /app
 
-COPY build.gradle.kts /app
+COPY *.gradle.kts /app
 COPY src /app/src
 
-RUN gradle build
+RUN gradle build --no-daemon
 
 FROM openjdk:21-jdk-slim
 
