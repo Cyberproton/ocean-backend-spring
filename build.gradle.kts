@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "me.cyberproton"
-version = "0.0.1-SNAPSHOT"
+version = "1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -41,6 +41,10 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+}
+
+springBoot {
+    mainClass = "me.cyberproton.ocean.OceanApplication"
 }
 
 tasks.withType<Test> {
