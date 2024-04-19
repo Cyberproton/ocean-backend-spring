@@ -6,7 +6,7 @@ COPY *.gradle.kts /app
 COPY lombok.config /app
 COPY src /app/src
 
-RUN gradle build --no-daemon --project-prop org.gradle.welcome=false
+RUN gradle build --no-daemon --project-prop org.gradle.welcome=never
 
 FROM openjdk:21-jdk-slim
 
