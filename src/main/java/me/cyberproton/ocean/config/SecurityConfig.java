@@ -21,6 +21,7 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
     private final ExternalAuthConfig externalAuthConfig;
+    private final ExternalAppConfig externalAppConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -38,8 +39,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
-                                        "/api/v1/auth/**",
-                                        "/api/v1/images/**"
+                                        externalAppConfig.apiV1Path() + "/auth/**",
+                                        externalAppConfig.apiV1Path() + "/images/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

@@ -40,9 +40,9 @@ logging:
     org.springframework: ERROR
     me.cyberproton: DEBUG
 app:
-  env: development
+  env: ${APP_ENV}
   domain: ${APP_DOMAIN}
-  api-v1-path: v1
+  api-v1-path: ${APP_API_V1_PATH}
 jwt:
   secret: ${JWT_SECRET}
   expirationInMilliseconds: 86400000
