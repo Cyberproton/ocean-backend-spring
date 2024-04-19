@@ -42,7 +42,7 @@ logging:
 app:
   env: development
   domain: ${APP_DOMAIN}
-  api-v1-path: api/v1
+  api-v1-path: v1
 jwt:
   secret: ${JWT_SECRET}
   expirationInMilliseconds: 86400000
