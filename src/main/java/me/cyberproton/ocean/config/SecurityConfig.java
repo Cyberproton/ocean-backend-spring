@@ -31,11 +31,6 @@ public class SecurityConfig {
                         csrf.disable();
                     }
                 })
-                .cors(cors -> {
-                    if (externalAuthConfig.disableCors()) {
-                        cors.disable();
-                    }
-                })
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
