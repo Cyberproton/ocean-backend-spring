@@ -3,10 +3,12 @@ package me.cyberproton.ocean.config;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.annotations.V1ApiRestController;
+import me.cyberproton.ocean.features.auth.configs.ExternalAuthConfig;
 import me.cyberproton.ocean.features.search.SearchQuery;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.HandlerTypePredicate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     private final ExternalAppConfig externalAppConfig;
+    private final ExternalAuthConfig externalAuthConfig;
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
@@ -24,5 +27,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(@Nonnull FormatterRegistry registry) {
         registry.addConverter(new SearchQuery.StringToTypeConverter());
+    }
+
+    @Override
+    public void addCorsMappings(@Nonnull CorsRegistry registry) {
+        if (externalAuthConfig.disableCors()) {
+            registry.addMapping("/**")
+                    .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+        }
     }
 }
