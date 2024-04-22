@@ -33,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(@Nonnull CorsRegistry registry) {
         if (externalAuthConfig.disableCors()) {
             registry.addMapping("/**")
-                    .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+                    .allowedMethods("*");
         }
     }
 }
