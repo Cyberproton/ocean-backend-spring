@@ -29,11 +29,11 @@ public class SearchController {
     @GetMapping("test")
     public Object test(@RequestParam Long id) {
         TrackDocument trackDocument = TrackDocument.builder()
-                .id(id)
-                .name("Test")
-                .trackNumber(1)
-                .duration(1000L)
-                .build();
+                                                   .id(id)
+                                                   .name("Test")
+                                                   .trackNumber(1)
+                                                   .duration(1000)
+                                                   .build();
         elasticsearchOperations.save(trackDocument);
         return elasticsearchOperations.search(Query.findAll(), TrackDocument.class);
     }

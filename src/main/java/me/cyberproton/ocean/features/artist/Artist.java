@@ -1,10 +1,7 @@
 package me.cyberproton.ocean.features.artist;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.cyberproton.ocean.features.track.Track;
 import me.cyberproton.ocean.features.user.User;
 
@@ -12,7 +9,8 @@ import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @EntityListeners(ArtistListener.class)

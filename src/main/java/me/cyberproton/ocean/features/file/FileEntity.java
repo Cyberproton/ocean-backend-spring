@@ -20,6 +20,10 @@ public class FileEntity {
     @GeneratedValue
     private Long id;
 
+    @Builder.Default
+    @Enumerated
+    private FileType type = FileType.OTHER;
+
     private String name;
 
     private String mimetype;
@@ -36,4 +40,10 @@ public class FileEntity {
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
+
+    // Image specific fields
+
+    private Integer width;
+
+    private Integer height;
 }

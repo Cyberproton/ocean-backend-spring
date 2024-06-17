@@ -29,16 +29,21 @@ public class PlaylistSeeder {
                 imageUrls,
                 users,
                 "playlist-cover",
-                true
+                true,
+                fileEntity -> {
+                    fileEntity.setWidth(300);
+                    fileEntity.setHeight(300);
+                }
         );
 
         List<Playlist> playlists = new ArrayList<>();
         for (int i = 0; i < numberOfPlaylists; i++) {
+            FileEntity image = fileEntities.get(i);
             playlists.add(
                     Playlist.builder()
                             .name(faker.music().genre())
                             .description(faker.lorem().paragraph())
-                            .cover(fileEntities.get(i))
+                            .covers(List.of(image))
                             .isPublic(faker.random().nextBoolean())
                             .owner(SeedUtils.randomElement(users))
                             .build()

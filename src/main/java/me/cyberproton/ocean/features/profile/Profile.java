@@ -2,15 +2,15 @@ package me.cyberproton.ocean.features.profile;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import me.cyberproton.ocean.features.artist.ArtistProfileListener;
 import me.cyberproton.ocean.features.file.FileEntity;
 import me.cyberproton.ocean.features.user.User;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

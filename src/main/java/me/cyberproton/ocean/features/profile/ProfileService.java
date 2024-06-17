@@ -43,21 +43,23 @@ public class ProfileService {
     private Profile getOrCreateProfileByUserId(Long id) {
         Profile profile = profileRepository.findByUserId(id).orElse(null);
         if (profile == null) {
-            profile = Profile.builder().build();
             User user = userRepository.findById(id).orElseThrow();
-            profile.setUser(user);
+            profile = Profile.builder().user(user).build();
             profile = profileRepository.save(profile);
         }
         return profile;
     }
 
     private ProfileResponse mapProfileToResponse(Profile profile) {
-        System.out.println(profile);
         return ProfileResponse.builder()
-                .name(profile.getName())
-                .bio(profile.getBio())
-                .avatarUrl(imageUrlMapper.mapFileToUrl(profile.getAvatar()))
-                .bannerUrl(imageUrlMapper.mapFileToUrl(profile.getBanner()))
-                .build();
+                              .id(profile.getId())
+                              .username(profile.getUser().getUsername())
+                              .name(profile.getName())
+                              .bio(profile.getBio())
+                              .avatarUrl(imageUrlMapper.mapFileToUrl(profile.getAvatar()))
+                              .bannerUrl(imageUrlMapper.mapFileToUrl(profile.getBanner()))
+                              .numberOfFollowers(userRepository.countByFollowersId(profile.getUser().getId()))
+                              .numberOfFollowings(userRepository.countByFollowingId(profile.getUser().getId()))
+                              .build();
     }
 }

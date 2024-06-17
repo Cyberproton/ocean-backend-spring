@@ -24,7 +24,7 @@ public class TrackDocument {
     private Integer trackNumber;
 
     @Field
-    private Long duration;
+    private Integer duration;
 
     @Field
     private Long fileId;

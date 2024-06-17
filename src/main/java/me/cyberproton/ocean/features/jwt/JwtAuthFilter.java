@@ -23,10 +23,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(
-            @Nonnull HttpServletRequest request,
-            @Nonnull HttpServletResponse response,
-            @Nonnull FilterChain filterChain
+    protected void doFilterInternal(@Nonnull HttpServletRequest request,
+                                    @Nonnull HttpServletResponse response,
+                                    @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
         final String token = extractBearerTokenFromRequestHeader(request);
         if (token == null) {
@@ -46,13 +45,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         if (jwtService.isTokenValid(token, userDetails)) {
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                                                                                                         null,
+                                                                                                         userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext()
+                                 .setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
@@ -61,7 +59,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Nullable
     private String extractBearerTokenFromRequestHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) return null;
+        if (bearerToken == null || !bearerToken.startsWith("Bearer "))
+            return null;
         return bearerToken.substring(7);
     }
 }

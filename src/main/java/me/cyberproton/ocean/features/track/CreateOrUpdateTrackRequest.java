@@ -14,7 +14,7 @@ public record CreateOrUpdateTrackRequest(
         @Min(1)
         Integer trackNumber,
         @Min(1)
-        Long duration,
+        Integer duration,
         Long albumId,
         @NotEmpty
         Set<Long> artistIds

@@ -5,7 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.cyberproton.ocean.features.file.FileDocument;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +27,8 @@ public class PlaylistDocument {
 
     private boolean isPublic;
 
-    private Long coverId;
+    @Field(type = FieldType.Nested)
+    private List<FileDocument> covers;
 
     private Long ownerId;
 }

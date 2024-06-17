@@ -11,6 +11,7 @@ import me.cyberproton.ocean.features.recordlabel.RecordLabel;
 import me.cyberproton.ocean.features.track.Track;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -35,8 +36,8 @@ public class Album {
 
     private Date releaseDate;
 
-    @OneToOne
-    private FileEntity cover;
+    @OneToMany
+    private List<FileEntity> covers;
 
     @ManyToMany
     @JoinTable(

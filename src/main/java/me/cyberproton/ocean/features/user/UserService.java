@@ -15,35 +15,35 @@ public class UserService {
 
     public List<UserResponse> getUsers() {
         return userRepository.findAll().stream()
-                .map(user -> UserResponse.builder()
-                        .id(user.getId())
-                        .username(user.getUsername())
-                        .email(user.getEmail())
-                        .isEmailVerified(user.isEmailVerified())
-                        .isLocked(user.isLocked())
-                        .build())
-                .collect(Collectors.toList());
+                             .map(user -> UserResponse.builder()
+                                                      .id(user.getId())
+                                                      .username(user.getUsername())
+                                                      .email(user.getEmail())
+                                                      .isEmailVerified(user.isEmailVerified())
+                                                      .isLocked(user.isLocked())
+                                                      .build())
+                             .collect(Collectors.toList());
     }
 
     @Nullable
     public UserResponse getUserById(long id) {
         User user = userRepository.findEagerById(id).orElseThrow();
         return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .isEmailVerified(user.isEmailVerified())
-                .isLocked(user.isLocked())
-                .build();
+                           .id(user.getId())
+                           .username(user.getUsername())
+                           .email(user.getEmail())
+                           .isEmailVerified(user.isEmailVerified())
+                           .isLocked(user.isLocked())
+                           .build();
     }
 
     public Set<UserResponse> getFollowing(long id) {
         return userRepository
-                .findFollowingByFollowersId(id)
-                .orElseThrow()
-                .stream()
-                .map(this::mapUserToResponse)
-                .collect(Collectors.toSet());
+                       .findFollowingByFollowersId(id)
+                       .orElseThrow()
+                       .stream()
+                       .map(this::mapUserToResponse)
+                       .collect(Collectors.toSet());
     }
 
     public Set<UserResponse> followUser(User user, long id) {
@@ -52,8 +52,8 @@ public class UserService {
         follower.addFollowing(following);
         userRepository.save(follower);
         return follower.getFollowing().stream()
-                .map(this::mapUserToResponse)
-                .collect(Collectors.toSet());
+                       .map(this::mapUserToResponse)
+                       .collect(Collectors.toSet());
     }
 
     public Set<UserResponse> unfollowUser(User user, long id) {
@@ -62,17 +62,23 @@ public class UserService {
         follower.removeFollowing(following);
         userRepository.save(follower);
         return follower.getFollowing().stream()
-                .map(this::mapUserToResponse)
-                .collect(Collectors.toSet());
+                       .map(this::mapUserToResponse)
+                       .collect(Collectors.toSet());
+    }
+
+    public UserResponse updateUserUsername(User user, String username) {
+        user.setUsername(username);
+        userRepository.save(user);
+        return mapUserToResponse(user);
     }
 
     private UserResponse mapUserToResponse(User user) {
         return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .isEmailVerified(user.isEmailVerified())
-                .isLocked(user.isLocked())
-                .build();
+                           .id(user.getId())
+                           .username(user.getUsername())
+                           .email(user.getEmail())
+                           .isEmailVerified(user.isEmailVerified())
+                           .isLocked(user.isLocked())
+                           .build();
     }
 }

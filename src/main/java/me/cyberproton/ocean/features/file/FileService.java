@@ -17,6 +17,7 @@ import software.amazon.awssdk.transfer.s3.S3TransferManager;
 
 import java.io.*;
 import java.net.URLConnection;
+import java.util.function.Consumer;
 
 @Log4j2
 @AllArgsConstructor
@@ -33,7 +34,9 @@ public class FileService {
         return fileRepository.findById(id).orElseThrow();
     }
 
-    public FileEntity uploadFile(String bucket, MultipartFile file, User owner) {
+    public FileEntity uploadFile(
+            String bucket, MultipartFile file, User owner, Consumer<FileEntity> fileEntityModifier
+    ) {
         try {
             InputStream inputStream = file.getInputStream();
             return uploadFileStream(
@@ -42,7 +45,8 @@ public class FileService {
                     inputStream,
                     file.getContentType(),
                     file.getSize(),
-                    owner
+                    owner,
+                    fileEntityModifier
             );
         } catch (IOException e) {
             log.error("Failed to upload file", e);
@@ -56,7 +60,7 @@ public class FileService {
         return null;
     }
 
-    public FileEntity uploadFile(String bucket, File file, User owner) {
+    public FileEntity uploadFile(String bucket, File file, User owner, Consumer<FileEntity> fileEntityModifier) {
         String mimetype = URLConnection.guessContentTypeFromName(file.getName());
         try {
             InputStream inputStream = new FileInputStream(file);
@@ -66,7 +70,8 @@ public class FileService {
                     inputStream,
                     mimetype,
                     file.length(),
-                    owner
+                    owner,
+                    fileEntityModifier
             );
         } catch (FileNotFoundException e) {
             log.error("Failed to upload file", e);
@@ -80,22 +85,31 @@ public class FileService {
         return null;
     }
 
+    public FileEntity uploadFile(String bucket, File file, User owner) {
+        return uploadFile(bucket, file, owner, null);
+    }
+
     private FileEntity uploadFileStream(
             String bucket,
             String key,
             InputStream inputStream,
             String contentType,
             long size,
-            User owner
+            User owner,
+            Consumer<FileEntity> fileEntityModifier
     ) {
+        FileEntity entity = FileEntity.builder()
+                                      .path(bucket)
+                                      .name(key)
+                                      .size(size)
+                                      .mimetype(contentType)
+                                      .owner(owner)
+                                      .build();
+        if (fileEntityModifier != null) {
+            fileEntityModifier.accept(entity);
+        }
         FileEntity res = fileRepository.save(
-                FileEntity.builder()
-                        .path(bucket)
-                        .name(key)
-                        .size(size)
-                        .mimetype(contentType)
-                        .owner(owner)
-                        .build()
+                entity
         );
         s3AsyncClient.putObject(
                 PutObjectRequest
@@ -112,12 +126,35 @@ public class FileService {
         return res;
     }
 
-    public FileEntity uploadFileToDefaultBucket(MultipartFile file, User owner) {
-        return uploadFile(externalFileConfig.bucket(), file, owner);
+    public FileEntity uploadFileStream(
+            String bucket,
+            String key,
+            InputStream inputStream,
+            String contentType,
+            long size,
+            User owner
+    ) {
+        return uploadFileStream(bucket, key, inputStream, contentType, size, owner, null);
+    }
+
+    public FileEntity uploadFileToDefaultBucket(
+            MultipartFile file, User owner, Consumer<FileEntity> fileEntityModifier
+    ) {
+        return uploadFile(externalFileConfig.bucket(), file, owner, fileEntityModifier);
+    }
+
+    public FileEntity uploadFileToDefaultBucket(
+            MultipartFile file, User owner
+    ) {
+        return uploadFile(externalFileConfig.bucket(), file, owner, null);
+    }
+
+    public FileEntity uploadFileToDefaultBucket(File file, User owner, Consumer<FileEntity> fileEntityModifier) {
+        return uploadFile(externalFileConfig.bucket(), file, owner, fileEntityModifier);
     }
 
     public FileEntity uploadFileToDefaultBucket(File file, User owner) {
-        return uploadFile(externalFileConfig.bucket(), file, owner);
+        return uploadFile(externalFileConfig.bucket(), file, owner, null);
     }
 
     public void streamToOutputStream(StreamFileToOutputStreamRequest request) {
@@ -147,11 +184,11 @@ public class FileService {
     public StreamingResponseBody streamToStreamingResponseBody(StreamFileToBodyRequest request) {
         return outputStream -> streamToOutputStream(
                 StreamFileToOutputStreamRequest.builder()
-                        .id(request.id())
-                        .range(request.range())
-                        .outputStream(outputStream)
-                        .closeStreamAfterFinish(true)
-                        .build()
+                                               .id(request.id())
+                                               .range(request.range())
+                                               .outputStream(outputStream)
+                                               .closeStreamAfterFinish(true)
+                                               .build()
         );
     }
 }

@@ -4,9 +4,13 @@ import lombok.Builder;
 
 @Builder
 public record ProfileResponse(
+        Long id,
+        String username,
         String name,
         String bio,
         String avatarUrl,
-        String bannerUrl
+        String bannerUrl,
+        Long numberOfFollowers,
+        Long numberOfFollowings
 ) {
 }

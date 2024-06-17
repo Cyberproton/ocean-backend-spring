@@ -33,20 +33,24 @@ public class AlbumSeeder {
                 coverUrls,
                 users,
                 "album-cover",
-                true
+                true,
+                fileEntity -> {
+                    fileEntity.setWidth(300);
+                    fileEntity.setHeight(300);
+                }
         );
 
         List<Album> albums = new ArrayList<>();
         for (int i = 0; i < numberOfAlbums; i++) {
             Album album = Album.builder()
-                    .name(faker.brand().watch())
-                    .description(faker.lorem().paragraph())
-                    .type(SeedUtils.randomElement(AlbumType.values()))
-                    .copyrights(Set.copyOf(SeedUtils.randomElements(copyrights, 2)))
-                    .cover(coverFiles.get(i))
-                    .recordLabel(SeedUtils.randomElement(recordLabels))
-                    .releaseDate(faker.date().birthday())
-                    .build();
+                               .name(faker.brand().watch())
+                               .description(faker.lorem().paragraph())
+                               .type(SeedUtils.randomElement(AlbumType.values()))
+                               .copyrights(Set.copyOf(SeedUtils.randomElements(copyrights, 2)))
+                               .covers(List.of(coverFiles.get(i)))
+                               .recordLabel(SeedUtils.randomElement(recordLabels))
+                               .releaseDate(faker.date().birthday())
+                               .build();
             albums.add(album);
         }
         return albumRepository.saveAll(albums);

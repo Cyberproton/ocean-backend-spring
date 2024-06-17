@@ -28,7 +28,7 @@ public class Track {
 
     private Integer trackNumber;
 
-    private Long duration;
+    private Integer duration;
 
     @OneToOne
     private FileEntity file;

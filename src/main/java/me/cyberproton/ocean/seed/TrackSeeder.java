@@ -56,14 +56,14 @@ public class TrackSeeder {
         for (int i = 0; i < numberOfTracks; i++) {
             tracks.add(
                     Track.builder()
-                            .name(faker.touhou().trackName())
-                            .duration(faker.random().nextLong())
-                            .trackNumber(faker.random().nextInt(1, 3))
-                            .album(SeedUtils.randomElement(albums))
-                            .artists(Set.copyOf(SeedUtils.randomElements(artists, 2)))
-                            .genres(Set.copyOf(SeedUtils.randomElements(genres, 2)))
-                            .file(files.get(i))
-                            .build()
+                         .name(faker.touhou().trackName())
+                         .duration(6000)
+                         .trackNumber(faker.random().nextInt(1, 3))
+                         .album(SeedUtils.randomElement(albums))
+                         .artists(Set.copyOf(SeedUtils.randomElements(artists, 2)))
+                         .genres(Set.copyOf(SeedUtils.randomElements(genres, 2)))
+                         .file(files.get(i))
+                         .build()
             );
         }
 

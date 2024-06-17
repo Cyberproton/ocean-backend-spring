@@ -32,7 +32,7 @@ public class ProfileController {
         return profileService.updateProfileByUserId(userDetails.getUserId(), request);
     }
 
-    @PutMapping("/me/avatar")
+    @PatchMapping("/me/avatar")
     public ProfileResponse updateMyAvatar(
             @RequestPart("attachment") MultipartFile file,
             @AuthenticationPrincipal AppUserDetails userDetails
@@ -44,7 +44,7 @@ public class ProfileController {
         );
     }
 
-    @PutMapping("/me/banner")
+    @PatchMapping("/me/banner")
     public ProfileResponse updateMyBanner(
             @RequestPart("attachment") MultipartFile file,
             @AuthenticationPrincipal AppUserDetails userDetails

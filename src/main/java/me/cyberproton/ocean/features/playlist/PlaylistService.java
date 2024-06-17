@@ -29,9 +29,10 @@ public class PlaylistService {
 
     public Set<PlaylistResponse> getUserPlaylists(Long id) {
         return playlistRepository
-                .findByOwnerId(id)
-                .map(p -> p.stream().map(playlist -> PlaylistResponse.fromEntity(playlist, imageUrlMapper)).collect(Collectors.toSet()))
-                .orElseThrow();
+                       .findByOwnerId(id)
+                       .map(p -> p.stream().map(playlist -> PlaylistResponse.fromEntity(playlist, imageUrlMapper))
+                                  .collect(Collectors.toSet()))
+                       .orElseThrow();
     }
 
     public PlaylistResponse createPlaylist(CreateOrUpdatePlaylist createOrUpdatePlaylist, Long userId) {
@@ -46,22 +47,22 @@ public class PlaylistService {
                 );
             }
             tracks = ts
-                    .stream()
-                    .map(
-                            track -> PlaylistTrack.builder()
-                                    .track(track)
-                                    .trackPosition(0L)
-                                    .build()
-                    )
-                    .collect(Collectors.toSet());
+                             .stream()
+                             .map(
+                                     track -> PlaylistTrack.builder()
+                                                           .track(track)
+                                                           .trackPosition(0L)
+                                                           .build()
+                             )
+                             .collect(Collectors.toSet());
         }
         Playlist playlist = Playlist.builder()
-                .name(createOrUpdatePlaylist.name())
-                .description(createOrUpdatePlaylist.description())
-                .isPublic(createOrUpdatePlaylist.isPublic())
-                .owner(user)
-                .playlistTracks(tracks)
-                .build();
+                                    .name(createOrUpdatePlaylist.name())
+                                    .description(createOrUpdatePlaylist.description())
+                                    .isPublic(createOrUpdatePlaylist.isPublic())
+                                    .owner(user)
+                                    .playlistTracks(tracks)
+                                    .build();
         Playlist saved = playlistRepository.save(playlist);
         eventPublisher.publishEvent(new PlaylistEvent(PlaylistEvent.Type.CREATE, saved));
         return PlaylistResponse.fromEntity(saved, imageUrlMapper);
@@ -78,14 +79,14 @@ public class PlaylistService {
                 );
             }
             tracks = ts
-                    .stream()
-                    .map(
-                            track -> PlaylistTrack.builder()
-                                    .track(track)
-                                    .trackPosition(0L)
-                                    .build()
-                    )
-                    .collect(Collectors.toSet());
+                             .stream()
+                             .map(
+                                     track -> PlaylistTrack.builder()
+                                                           .track(track)
+                                                           .trackPosition(0L)
+                                                           .build()
+                             )
+                             .collect(Collectors.toSet());
         }
         Playlist playlist = playlistRepository.findById(playlistId).orElseThrow();
         playlist.setName(createOrUpdatePlaylist.name());
@@ -113,8 +114,8 @@ public class PlaylistService {
             );
         }
         List<PlaylistTrack> playlistTracks = playlistTrackRepository
-                .findAllByPlaylistIdOrderByTrackPosition(playlistId)
-                .orElseThrow();
+                                                     .findAllByPlaylistIdOrderByTrackPosition(playlistId)
+                                                     .orElseThrow();
         if (request.position() > playlistTracks.size()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -122,15 +123,15 @@ public class PlaylistService {
             );
         }
         playlistTracks.addAll(request.position().intValue(), tracks
-                .stream()
-                .map(
-                        track -> PlaylistTrack.builder()
-                                .playlist(playlist)
-                                .track(track)
-                                .trackPosition(0L)
-                                .build()
-                )
-                .toList()
+                                                                     .stream()
+                                                                     .map(
+                                                                             track -> PlaylistTrack.builder()
+                                                                                                   .playlist(playlist)
+                                                                                                   .track(track)
+                                                                                                   .trackPosition(0L)
+                                                                                                   .build()
+                                                                     )
+                                                                     .toList()
         );
         // Update track positions
         for (int i = request.position().intValue(); i < playlistTracks.size(); i++) {
@@ -138,9 +139,10 @@ public class PlaylistService {
         }
         playlistTrackRepository.saveAll(playlistTracks);
         return trackRepository
-                .findAllByPlaylistTracksPlaylistIdOrderByPlaylistTracksTrackPosition(playlistId)
-                .map(t -> t.stream().map(TrackResponse::fromEntity).collect(Collectors.toSet()))
-                .orElseThrow();
+                       .findAllByPlaylistTracksPlaylistIdOrderByPlaylistTracksTrackPosition(playlistId)
+                       .map(t -> t.stream().map(tr -> TrackResponse.fromEntity(tr, imageUrlMapper))
+                                  .collect(Collectors.toSet()))
+                       .orElseThrow();
     }
 
     public Set<TrackResponse> removeTracksFromPlaylist(Long playlistId, List<Long> trackIds) {
@@ -153,8 +155,8 @@ public class PlaylistService {
             );
         }
         List<PlaylistTrack> playlistTracks = playlistTrackRepository
-                .findAllByPlaylistIdOrderByTrackPosition(playlistId)
-                .orElseThrow();
+                                                     .findAllByPlaylistIdOrderByTrackPosition(playlistId)
+                                                     .orElseThrow();
         playlistTracks.removeIf(playlistTrack -> trackIds.contains(playlistTrack.getTrack().getId()));
         // Update track positions
         for (int i = 0; i < playlistTracks.size(); i++) {
@@ -162,16 +164,19 @@ public class PlaylistService {
         }
         playlistTrackRepository.saveAll(playlistTracks);
         return trackRepository
-                .findAllByPlaylistTracksPlaylistIdOrderByPlaylistTracksTrackPosition(playlistId)
-                .map(t -> t.stream().map(TrackResponse::fromEntity).collect(Collectors.toSet()))
-                .orElseThrow();
+                       .findAllByPlaylistTracksPlaylistIdOrderByPlaylistTracksTrackPosition(playlistId)
+                       .map(t -> t.stream().map(tr -> TrackResponse.fromEntity(tr, imageUrlMapper))
+                                  .collect(Collectors.toSet()))
+                       .orElseThrow();
     }
 
-    public Set<TrackResponse> updatePlaylistTracksPosition(Long playlistId, UpdatePlaylistTrackPositionRequest updatePlaylistTrackPositionRequest) {
+    public Set<TrackResponse> updatePlaylistTracksPosition(
+            Long playlistId, UpdatePlaylistTrackPositionRequest updatePlaylistTrackPositionRequest
+    ) {
         playlistRepository.findById(playlistId).orElseThrow();
         List<PlaylistTrack> playlistTracks = playlistTrackRepository
-                .findAllByPlaylistIdOrderByTrackPosition(playlistId)
-                .orElseThrow();
+                                                     .findAllByPlaylistIdOrderByTrackPosition(playlistId)
+                                                     .orElseThrow();
         long startPosition = updatePlaylistTrackPositionRequest.startPosition();
         long insertBeforePosition = updatePlaylistTrackPositionRequest.insertBeforePosition();
         long length = updatePlaylistTrackPositionRequest.length();
@@ -198,8 +203,9 @@ public class PlaylistService {
         }
         playlistTrackRepository.saveAll(playlistTracks);
         return trackRepository
-                .findAllByPlaylistTracksPlaylistIdOrderByPlaylistTracksTrackPosition(playlistId)
-                .map(t -> t.stream().map(TrackResponse::fromEntity).collect(Collectors.toSet()))
-                .orElseThrow();
+                       .findAllByPlaylistTracksPlaylistIdOrderByPlaylistTracksTrackPosition(playlistId)
+                       .map(t -> t.stream().map(tr -> TrackResponse.fromEntity(tr, imageUrlMapper))
+                                  .collect(Collectors.toSet()))
+                       .orElseThrow();
     }
 }

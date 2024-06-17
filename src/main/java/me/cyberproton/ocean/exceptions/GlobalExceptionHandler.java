@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Map;
@@ -25,14 +26,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<Object> handleDatabaseException(DataAccessException ex, HttpServletRequest request) {
+        // Log the exception
+        logger.error("An exception occurred", ex);
+
         ErrorMessage error = ErrorMessage.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(isProductionEnvironment() ? "Internal server error" : ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        Map<String, Object> res = Map.of(
-                "error", error
-        );
+                                         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                         .message(isProductionEnvironment() ? "Internal server error" : ex.getMessage())
+                                         .path(request.getRequestURI())
+                                         .build();
+        Map<String, Object> res = Map.of("error", error);
+        return new ResponseEntity<>(res, HttpStatusCode.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> handleResponseStatusException(
+            ResponseStatusException ex, HttpServletRequest request
+    ) {
+        // Log the exception
+        logger.error("An exception occurred", ex);
+        ErrorMessage error = ErrorMessage.builder()
+                                         .status(ex.getStatusCode().value())
+                                         .message(ex.getReason())
+                                         .path(request.getRequestURI())
+                                         .build();
+        Map<String, Object> res = Map.of("error", error);
         return new ResponseEntity<>(res, HttpStatusCode.valueOf(error.getStatus()));
     }
 
@@ -43,13 +60,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         String message = ex.getMessage();
         ErrorMessage error = ErrorMessage.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(isProductionEnvironment() ? "Internal server error" : message)
-                .path(request.getRequestURI())
-                .build();
-        Map<String, Object> res = Map.of(
-                "error", error
-        );
+                                         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                         .message(isProductionEnvironment() ? "Internal server error" : message)
+                                         .path(request.getRequestURI())
+                                         .build();
+        Map<String, Object> res = Map.of("error", error);
         return new ResponseEntity<>(res, HttpStatusCode.valueOf(error.getStatus()));
     }
 }

@@ -11,7 +11,7 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
     @EntityGraph(attributePaths = "user.profile")
     Optional<Artist> findWithProfileById(Long id);
 
-    Optional<Artist> findByUserId(Long userId);
+    Optional<Artist> findFirstByUserId(Long userId);
 
-    Optional<Artist> findByUserProfileId(Long userProfileId);
+    Optional<Artist> findFirstByUserProfileId(Long profileId);
 }

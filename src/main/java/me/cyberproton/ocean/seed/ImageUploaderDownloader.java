@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 @AllArgsConstructor
 @Component
@@ -53,11 +54,13 @@ public class ImageUploaderDownloader {
         int remainingFileCount = requiredFileCount - existingFileCount;
         for (int i = 0; i < Math.min(existingFileCount, requiredFileCount); i++) {
             String existingImagePath = tempFolder.list()[i];
-            futures.add(CompletableFuture.completedFuture(tempFolder.getAbsolutePath() + File.separator + existingImagePath));
+            futures.add(CompletableFuture.completedFuture(
+                    tempFolder.getAbsolutePath() + File.separator + existingImagePath));
         }
         for (int i = 0; i < remainingFileCount; i++) {
             String imageUrl = imageUrls.get(i);
-            CompletableFuture<String> future = CompletableFuture.supplyAsync(() ->
+            CompletableFuture<String> future = CompletableFuture.supplyAsync(
+                    () ->
                             download(imageUrl, folderPath),
                     threadPoolTaskExecutor.getThreadPoolExecutor()
             );
@@ -72,17 +75,28 @@ public class ImageUploaderDownloader {
             List<String> imageUrls,
             List<User> owners,
             @Nullable String folderPath,
-            boolean checkExistingImages
+            boolean checkExistingImages,
+            @Nullable
+            Consumer<FileEntity> fileEntityModifier
     ) {
         List<String> imagePaths = downloadAll(imageUrls, folderPath, checkExistingImages);
         List<FileEntity> files = new ArrayList<>();
         for (int i = 0; i < imagePaths.size(); i++) {
             File file = new File(imagePaths.get(i));
             User owner = owners.get(i);
-            FileEntity entity = fileService.uploadFileToDefaultBucket(file, owner);
+            FileEntity entity = fileService.uploadFileToDefaultBucket(file, owner, fileEntityModifier);
             files.add(entity);
         }
         return files;
+    }
+
+    public List<FileEntity> downloadAndUploadAll(
+            List<String> imageUrls,
+            List<User> owners,
+            @Nullable String folderPath,
+            boolean checkExistingImages
+    ) {
+        return downloadAndUploadAll(imageUrls, owners, folderPath, checkExistingImages, null);
     }
 
     private File getTempFolder(String folderPath) {

@@ -7,11 +7,12 @@ import me.cyberproton.ocean.features.role.Role;
 import me.cyberproton.ocean.features.role.RoleRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-//@Component
+@Component
 public class CreateDefaultRoles implements ApplicationListener<ContextRefreshedEvent> {
     private static boolean alreadySetup = false;
     private final RoleRepository roleRepository;
@@ -22,7 +23,7 @@ public class CreateDefaultRoles implements ApplicationListener<ContextRefreshedE
         if (alreadySetup) {
             return;
         }
-        if (roleRepository.findByName("USER") != null) {
+        if (roleRepository.findByName("USER").orElse(null) != null) {
             return;
         }
         roleRepository.saveAll(List.of(

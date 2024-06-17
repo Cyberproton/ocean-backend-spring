@@ -2,6 +2,7 @@ package me.cyberproton.ocean.features.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import me.cyberproton.ocean.features.artist.Artist;
 import me.cyberproton.ocean.features.playlist.Playlist;
 import me.cyberproton.ocean.features.profile.Profile;
 import me.cyberproton.ocean.features.role.Role;
@@ -53,6 +54,9 @@ public class User {
 
     @OneToMany
     private Set<Playlist> playlists;
+
+    @OneToOne(mappedBy = "user")
+    private Artist artist;
 
     public void addRole(Role role) {
         Set<Role> roles = getRoles();

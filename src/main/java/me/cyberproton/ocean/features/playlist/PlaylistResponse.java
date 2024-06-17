@@ -3,11 +3,13 @@ package me.cyberproton.ocean.features.playlist;
 import me.cyberproton.ocean.features.file.ImageResponse;
 import me.cyberproton.ocean.util.ImageUrlMapper;
 
+import java.util.List;
+
 public record PlaylistResponse(
         Long id,
         String name,
         String description,
-        ImageResponse cover,
+        List<ImageResponse> covers,
         Long totalTracks
 ) {
     public static PlaylistResponse fromEntity(Playlist playlist, ImageUrlMapper imageUrlMapper) {
@@ -15,20 +17,27 @@ public record PlaylistResponse(
                 playlist.getId(),
                 playlist.getName(),
                 playlist.getDescription(),
-                playlist.getCover() != null
-                        ? new ImageResponse(imageUrlMapper.mapFileToUrl(playlist.getCover()))
-                        : null,
+                playlist.getCovers() == null
+                        ? null
+                        : playlist.getCovers().stream()
+                                  .map(fileEntity -> ImageResponse.fromEntity(fileEntity, imageUrlMapper))
+                                  .toList(),
                 playlist.getPlaylistTracks() == null ? 0 : (long) playlist.getPlaylistTracks().size()
         );
     }
 
-    public static PlaylistResponse fromElasticsearchDocument(PlaylistDocument playlistDocument, ImageUrlMapper imageUrlMapper) {
+    public static PlaylistResponse fromElasticsearchDocument(
+            PlaylistDocument playlistDocument, ImageUrlMapper imageUrlMapper
+    ) {
         return new PlaylistResponse(
                 playlistDocument.getId(),
                 playlistDocument.getName(),
                 playlistDocument.getDescription(),
-                playlistDocument.getCoverId() != null
-                        ? new ImageResponse(imageUrlMapper.mapFileIdToUrl(playlistDocument.getCoverId()))
+                playlistDocument.getCovers() != null
+                        ? playlistDocument.getCovers().stream()
+                                          .map(fileDocument -> ImageResponse.fromElasticsearchDocument(
+                                                  fileDocument, imageUrlMapper))
+                                          .toList()
                         : null,
                 null
         );

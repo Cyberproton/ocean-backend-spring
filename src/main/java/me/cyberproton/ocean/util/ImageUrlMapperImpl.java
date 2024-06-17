@@ -1,22 +1,31 @@
 package me.cyberproton.ocean.util;
 
 import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.config.ExternalAppConfig;
 import me.cyberproton.ocean.features.file.FileEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
-@AllArgsConstructor
 @Component
 public class ImageUrlMapperImpl implements ImageUrlMapper {
-    private final ExternalAppConfig externalAppConfig;
+    private final UriComponentsBuilder builder;
+
+    public ImageUrlMapperImpl(ExternalAppConfig externalAppConfig) {
+        this.builder = UriComponentsBuilder.fromHttpUrl(externalAppConfig.domain())
+                                           .pathSegment(externalAppConfig.apiV1Path())
+                                           .pathSegment("images");
+    }
 
     @Nullable
     public String mapFileIdToUrl(@Nullable Long id) {
         if (id == null) {
             return null;
         }
-        return externalAppConfig.domain() + "/api/v1/images/" + id;
+
+        return builder.cloneBuilder()
+                      .pathSegment(id.toString())
+                      .build()
+                      .toUriString();
     }
 
     @Nullable

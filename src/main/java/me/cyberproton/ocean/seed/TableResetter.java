@@ -13,7 +13,7 @@ public class TableResetter {
     @Transactional
     public void reset() {
         entityManager.createNativeQuery("SELECT tablename FROM pg_tables WHERE schemaname='public'").getResultList().forEach(tableName -> {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName + " CASCADE").executeUpdate();
+            entityManager.createNativeQuery("TRUNCATE TABLE \"" + tableName + "\" CASCADE").executeUpdate();
         });
     }
 }

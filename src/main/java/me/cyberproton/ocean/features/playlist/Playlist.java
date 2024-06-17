@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import me.cyberproton.ocean.features.file.FileEntity;
 import me.cyberproton.ocean.features.user.User;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -23,12 +24,13 @@ public class Playlist {
 
     private String name;
 
+    @Column(length = PlaylistConstants.PLAYLIST_DESCRIPTION_MAX_LENGTH)
     private String description;
 
     private boolean isPublic;
 
-    @OneToOne
-    private FileEntity cover;
+    @OneToMany
+    private List<FileEntity> covers;
 
     @OneToMany(mappedBy = "playlist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PlaylistTrack> playlistTracks;

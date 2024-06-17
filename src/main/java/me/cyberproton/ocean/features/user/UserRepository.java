@@ -24,4 +24,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<Set<User>> findFollowingByFollowersId(Long id);
 
     Optional<User> findByProfileId(Long id);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByUsername(String username);
+
+    Long countByFollowingId(Long id);
+
+    Long countByFollowersId(Long id);
 }

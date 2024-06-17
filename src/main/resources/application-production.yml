@@ -45,7 +45,8 @@ app:
   api-v1-path: ${APP_API_V1_PATH}
 jwt:
   secret: ${JWT_SECRET}
-  expirationInMilliseconds: 86400000
+  access-token-expiration-in-ms: 900000
+  refresh-token-expiration-in-ms: 604800000
 auth:
   disableCsrf: true
   disable-cors: true
