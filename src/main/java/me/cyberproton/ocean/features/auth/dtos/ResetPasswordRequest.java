@@ -11,6 +11,5 @@ import me.cyberproton.ocean.validation.IsEmailOrUsername;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResetPasswordRequest {
-    @IsEmailOrUsername
-    private String usernameOrEmail;
+    @IsEmailOrUsername private String usernameOrEmail;
 }

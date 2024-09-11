@@ -1,14 +1,6 @@
 package me.cyberproton.ocean.seed;
 
 import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-import me.cyberproton.ocean.features.file.FileEntity;
-import me.cyberproton.ocean.features.file.FileService;
-import me.cyberproton.ocean.features.user.User;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,9 +11,18 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import me.cyberproton.ocean.features.file.FileEntity;
+import me.cyberproton.ocean.features.file.FileService;
+import me.cyberproton.ocean.features.user.UserEntity;
+import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @Component
+@Profile("seeder")
 public class ImageUploaderDownloader {
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     private final FileService fileService;
@@ -42,10 +43,7 @@ public class ImageUploaderDownloader {
 
     @SneakyThrows
     public List<String> downloadAll(
-            List<String> imageUrls,
-            @Nullable String folderPath,
-            boolean checkExistingImages
-    ) {
+            List<String> imageUrls, @Nullable String folderPath, boolean checkExistingImages) {
         List<CompletableFuture<String>> futures = new ArrayList<>();
         File tempFolder = getTempFolder(folderPath);
         tempFolder.mkdirs();
@@ -54,16 +52,16 @@ public class ImageUploaderDownloader {
         int remainingFileCount = requiredFileCount - existingFileCount;
         for (int i = 0; i < Math.min(existingFileCount, requiredFileCount); i++) {
             String existingImagePath = tempFolder.list()[i];
-            futures.add(CompletableFuture.completedFuture(
-                    tempFolder.getAbsolutePath() + File.separator + existingImagePath));
+            futures.add(
+                    CompletableFuture.completedFuture(
+                            tempFolder.getAbsolutePath() + File.separator + existingImagePath));
         }
         for (int i = 0; i < remainingFileCount; i++) {
             String imageUrl = imageUrls.get(i);
-            CompletableFuture<String> future = CompletableFuture.supplyAsync(
-                    () ->
-                            download(imageUrl, folderPath),
-                    threadPoolTaskExecutor.getThreadPoolExecutor()
-            );
+            CompletableFuture<String> future =
+                    CompletableFuture.supplyAsync(
+                            () -> download(imageUrl, folderPath),
+                            threadPoolTaskExecutor.getThreadPoolExecutor());
             futures.add(future);
         }
 
@@ -73,18 +71,17 @@ public class ImageUploaderDownloader {
 
     public List<FileEntity> downloadAndUploadAll(
             List<String> imageUrls,
-            List<User> owners,
+            List<UserEntity> owners,
             @Nullable String folderPath,
             boolean checkExistingImages,
-            @Nullable
-            Consumer<FileEntity> fileEntityModifier
-    ) {
+            @Nullable Consumer<FileEntity> fileEntityModifier) {
         List<String> imagePaths = downloadAll(imageUrls, folderPath, checkExistingImages);
         List<FileEntity> files = new ArrayList<>();
         for (int i = 0; i < imagePaths.size(); i++) {
             File file = new File(imagePaths.get(i));
-            User owner = owners.get(i);
-            FileEntity entity = fileService.uploadFileToDefaultBucket(file, owner, fileEntityModifier);
+            UserEntity owner = owners.get(i);
+            FileEntity entity =
+                    fileService.uploadFileToDefaultBucket(file, owner, fileEntityModifier);
             files.add(entity);
         }
         return files;
@@ -92,17 +89,13 @@ public class ImageUploaderDownloader {
 
     public List<FileEntity> downloadAndUploadAll(
             List<String> imageUrls,
-            List<User> owners,
+            List<UserEntity> owners,
             @Nullable String folderPath,
-            boolean checkExistingImages
-    ) {
+            boolean checkExistingImages) {
         return downloadAndUploadAll(imageUrls, owners, folderPath, checkExistingImages, null);
     }
 
     private File getTempFolder(String folderPath) {
-        return new File(
-                "tmp" +
-                        (folderPath == null ? "" : File.separator + folderPath)
-        );
+        return new File("tmp" + (folderPath == null ? "" : File.separator + folderPath));
     }
 }

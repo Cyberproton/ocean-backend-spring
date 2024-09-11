@@ -1,12 +1,11 @@
 package me.cyberproton.ocean.features.artist;
 
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.annotations.V1ApiRestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @V1ApiRestController

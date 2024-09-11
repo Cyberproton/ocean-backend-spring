@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ArtistRepository extends JpaRepository<Artist, Long> {
+public interface ArtistRepository extends JpaRepository<ArtistEntity, Long> {
     @EntityGraph(attributePaths = "user.profile")
-    Optional<Artist> findWithProfileById(Long id);
+    Optional<ArtistEntity> findWithProfileById(Long id);
 
-    Optional<Artist> findFirstByUserId(Long userId);
+    Optional<ArtistEntity> findFirstByUserId(Long userId);
 
-    Optional<Artist> findFirstByUserProfileId(Long profileId);
+    Optional<ArtistEntity> findFirstByUserProfileId(Long profileId);
 }

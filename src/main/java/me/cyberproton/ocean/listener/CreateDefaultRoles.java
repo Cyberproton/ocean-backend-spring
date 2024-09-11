@@ -2,14 +2,13 @@ package me.cyberproton.ocean.listener;
 
 import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.cyberproton.ocean.features.role.Role;
 import me.cyberproton.ocean.features.role.RoleRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -26,11 +25,11 @@ public class CreateDefaultRoles implements ApplicationListener<ContextRefreshedE
         if (roleRepository.findByName("USER").orElse(null) != null) {
             return;
         }
-        roleRepository.saveAll(List.of(
-                Role.builder().name("USER").build(),
-                Role.builder().name("ARTIST").build(),
-                Role.builder().name("ADMIN").build()
-        ));
+        roleRepository.saveAll(
+                List.of(
+                        Role.builder().name("USER").build(),
+                        Role.builder().name("ARTIST").build(),
+                        Role.builder().name("ADMIN").build()));
         alreadySetup = true;
     }
 }

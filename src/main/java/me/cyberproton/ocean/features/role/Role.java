@@ -1,10 +1,9 @@
 package me.cyberproton.ocean.features.role;
 
 import jakarta.persistence.*;
-import lombok.*;
-import me.cyberproton.ocean.features.user.User;
-
 import java.util.Set;
+import lombok.*;
+import me.cyberproton.ocean.features.user.UserEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,14 +20,12 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private Set<UserEntity> users;
 
     @ManyToMany
     @JoinTable(
             name = "roles_privileges",
-            joinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "privilege_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
     private Set<Privilege> privileges;
 }

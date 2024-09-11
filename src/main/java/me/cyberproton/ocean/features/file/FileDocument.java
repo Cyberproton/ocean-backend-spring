@@ -14,12 +14,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Getter
 @Document(indexName = "image")
 public class FileDocument {
-    @Id
-    private Long id;
+    @Id private Long id;
 
-    @Builder.Default
-    @Enumerated
-    private FileType type = FileType.OTHER;
+    @Builder.Default @Enumerated private FileType type = FileType.OTHER;
 
     private String name;
 

@@ -6,8 +6,4 @@ import lombok.Builder;
 
 @Builder
 public record CreateOrUpdateRecordLabelRequest(
-        @NotBlank
-        @Size(max = RecordLabelConstants.MAX_NAME_LENGTH)
-        String name
-) {
-}
+        @NotBlank @Size(max = RecordLabelConstants.MAX_NAME_LENGTH) String name) {}

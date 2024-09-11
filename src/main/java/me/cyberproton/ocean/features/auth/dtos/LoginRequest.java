@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequest {
-    @Email
-    private String email;
+    @Email private String email;
+
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 }

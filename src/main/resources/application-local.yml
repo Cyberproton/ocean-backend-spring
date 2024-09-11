@@ -1,4 +1,6 @@
 spring:
+  main:
+    lazy-initialization: false
   datasource:
     hikari:
       connection-timeout: ${DB_CONNECTION_TIMEOUT:20000}
@@ -9,6 +11,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}
@@ -39,6 +47,7 @@ logging:
   level:
     org.springframework: ERROR
     me.cyberproton: DEBUG
+    org.jooq.tools.LoggerListener: DEBUG
 app:
   env: ${APP_ENV}
   domain: ${APP_DOMAIN}

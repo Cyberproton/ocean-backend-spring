@@ -1,5 +1,6 @@
 package me.cyberproton.ocean.features.elasticsearch;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponseInterceptor;
@@ -17,8 +18,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.http.HttpHeaders;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Configuration
 public class ElasticsearchConfig {
@@ -31,22 +30,28 @@ public class ElasticsearchConfig {
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(
                         elasticsearchExternalConfig.username(),
-                        elasticsearchExternalConfig.password())
-        );
+                        elasticsearchExternalConfig.password()));
 
         return new RestHighLevelClient(
-                RestClient
-                        .builder(HttpHost.create(elasticsearchExternalConfig.uris()))
-                        .setHttpClientConfigCallback(httpClientBuilder -> {
-                            httpClientBuilder.disableAuthCaching();
-                            httpClientBuilder.setDefaultHeaders(List.of(
-                                    new BasicHeader(
-                                            HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())));
-                            httpClientBuilder.addInterceptorLast((HttpResponseInterceptor)
-                                    (response, context) ->
-                                            response.addHeader("X-Elastic-Product", "Elasticsearch"));
-                            return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                        }));
+                RestClient.builder(HttpHost.create(elasticsearchExternalConfig.uris()))
+                        .setHttpClientConfigCallback(
+                                httpClientBuilder -> {
+                                    httpClientBuilder.disableAuthCaching();
+                                    httpClientBuilder.setDefaultHeaders(
+                                            List.of(
+                                                    new BasicHeader(
+                                                            HttpHeaders.CONTENT_TYPE,
+                                                            ContentType.APPLICATION_JSON
+                                                                    .toString())));
+                                    httpClientBuilder.addInterceptorLast(
+                                            (HttpResponseInterceptor)
+                                                    (response, context) ->
+                                                            response.addHeader(
+                                                                    "X-Elastic-Product",
+                                                                    "Elasticsearch"));
+                                    return httpClientBuilder.setDefaultCredentialsProvider(
+                                            credentialsProvider);
+                                }));
     }
 
     @Bean(name = {"elasticsearchTemplate", "elasticsearchOperations"})

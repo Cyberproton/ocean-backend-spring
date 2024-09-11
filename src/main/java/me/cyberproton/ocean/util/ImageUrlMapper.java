@@ -4,9 +4,7 @@ import jakarta.annotation.Nullable;
 import me.cyberproton.ocean.features.file.FileEntity;
 
 public interface ImageUrlMapper {
-    @Nullable
-    String mapFileToUrl(@Nullable FileEntity file);
+    @Nullable String mapFileToUrl(@Nullable FileEntity file);
 
-    @Nullable
-    String mapFileIdToUrl(@Nullable Long fileId);
+    @Nullable String mapFileIdToUrl(@Nullable Long fileId);
 }

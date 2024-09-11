@@ -1,11 +1,15 @@
 package me.cyberproton.ocean.listener;
 
 import jakarta.annotation.Nonnull;
+
 import lombok.AllArgsConstructor;
-import me.cyberproton.ocean.features.album.AlbumDocument;
+
+import me.cyberproton.ocean.features.album.entity.AlbumDocument;
 import me.cyberproton.ocean.features.artist.ArtistDocument;
 import me.cyberproton.ocean.features.elasticsearch.TrackDocument;
-import me.cyberproton.ocean.features.playlist.PlaylistDocument;
+import me.cyberproton.ocean.features.playlist.entity.PlaylistDocument;
+import me.cyberproton.ocean.features.user.UserDocument;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -32,8 +36,8 @@ public class ElasticIndicesCreator implements ApplicationListener<ContextRefresh
                 AlbumDocument.class,
                 ArtistDocument.class,
                 PlaylistDocument.class,
-                TrackDocument.class
-        );
+                TrackDocument.class,
+                UserDocument.class);
     }
 
     public void deleteDefaultIndices() {
@@ -41,8 +45,8 @@ public class ElasticIndicesCreator implements ApplicationListener<ContextRefresh
                 AlbumDocument.class,
                 ArtistDocument.class,
                 PlaylistDocument.class,
-                TrackDocument.class
-        );
+                TrackDocument.class,
+                UserDocument.class);
     }
 
     private void createIndexIfNotExists(Class<?> documentClass) {

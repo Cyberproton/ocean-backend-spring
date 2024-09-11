@@ -20,19 +20,21 @@ public class EmailService {
             context.setVariables(request.getModel());
         }
         String htmlBody = templateEngine.process(request.getTemplate(), context);
-        sendHtmlEmail(EmailRequest.builder()
-                .to(request.getTo())
-                .subject(request.getSubject())
-                .content(htmlBody)
-                .build()
-        );
+        sendHtmlEmail(
+                EmailRequest.builder()
+                        .to(request.getTo())
+                        .subject(request.getSubject())
+                        .content(htmlBody)
+                        .build());
     }
 
     public void sendHtmlEmail(EmailRequest request) {
-        mailSender.send(mimeMessage -> {
-            mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(request.getTo()));
-            mimeMessage.setSubject(request.getSubject());
-            mimeMessage.setContent(request.getContent(), "text/html");
-        });
+        mailSender.send(
+                mimeMessage -> {
+                    mimeMessage.setRecipient(
+                            Message.RecipientType.TO, new InternetAddress(request.getTo()));
+                    mimeMessage.setSubject(request.getSubject());
+                    mimeMessage.setContent(request.getContent(), "text/html");
+                });
     }
 }

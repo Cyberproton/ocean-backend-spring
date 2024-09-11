@@ -21,12 +21,12 @@ public class AuthConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return email -> userRepository
-                .findByEmail(email)
-                .map(AppUserDetails::new)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException("Email not found: " + email)
-                );
+        return email ->
+                userRepository
+                        .findByEmail(email)
+                        .map(AppUserDetails::new)
+                        .orElseThrow(
+                                () -> new UsernameNotFoundException("Email not found: " + email));
     }
 
     @Bean
@@ -38,7 +38,8 @@ public class AuthConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
         return config.getAuthenticationManager();
     }
 

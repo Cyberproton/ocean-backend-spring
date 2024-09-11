@@ -1,4 +1,3 @@
 package me.cyberproton.ocean.features.auth.dtos;
 
-public record RefreshTokenRequest(String refreshToken) {
-}
+public record RefreshTokenRequest(String refreshToken) {}

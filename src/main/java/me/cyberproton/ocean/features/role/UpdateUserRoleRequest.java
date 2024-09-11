@@ -1,9 +1,7 @@
 package me.cyberproton.ocean.features.role;
 
+import java.util.List;
 import lombok.Builder;
 
-import java.util.List;
-
 @Builder
-public record UpdateUserRoleRequest(List<String> roles) {
-}
+public record UpdateUserRoleRequest(List<String> roles) {}

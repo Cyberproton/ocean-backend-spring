@@ -6,9 +6,9 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class ArtistEvent extends ApplicationEvent {
     private final Type type;
-    private final Artist artist;
+    private final ArtistEntity artist;
 
-    public ArtistEvent(Type type, Artist artist) {
+    public ArtistEvent(Type type, ArtistEntity artist) {
         super(artist);
         this.type = type;
         this.artist = artist;

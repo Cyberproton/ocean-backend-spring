@@ -1,17 +1,22 @@
 package me.cyberproton.ocean.seed;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import me.cyberproton.ocean.features.playlist.*;
-import me.cyberproton.ocean.features.track.Track;
-import me.cyberproton.ocean.features.track.TrackRepository;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import me.cyberproton.ocean.features.playlist.entity.PlaylistEntity;
+import me.cyberproton.ocean.features.playlist.entity.PlaylistTrackEntity;
+import me.cyberproton.ocean.features.playlist.entity.PlaylistTrackKey;
+import me.cyberproton.ocean.features.playlist.repository.PlaylistRepository;
+import me.cyberproton.ocean.features.playlist.repository.PlaylistTrackRepository;
+import me.cyberproton.ocean.features.track.entity.TrackEntity;
+import me.cyberproton.ocean.features.track.repository.TrackRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @Component
+@Profile("seeder")
 public class PlaylistTrackSeeder {
     private final PlaylistRepository playlistRepository;
     private final TrackRepository trackRepository;
@@ -19,26 +24,24 @@ public class PlaylistTrackSeeder {
 
     @Transactional
     public void seed() {
-        List<Playlist> playlists = playlistRepository.findAll();
-        List<Track> tracks = trackRepository.findAll();
-        List<PlaylistTrack> playlistTracks = new ArrayList<>();
-        for (Playlist playlist : playlists) {
-            List<Track> pts = SeedUtils.randomElements(tracks, 5);
+        List<PlaylistEntity> playlists = playlistRepository.findAll();
+        List<TrackEntity> tracks = trackRepository.findAll();
+        List<PlaylistTrackEntity> playlistTracks = new ArrayList<>();
+        for (PlaylistEntity playlist : playlists) {
+            List<TrackEntity> pts = SeedUtils.randomElements(tracks, 5);
             for (int i = 0; i < pts.size(); i++) {
-                Track track = pts.get(i);
+                TrackEntity track = pts.get(i);
                 playlistTracks.add(
-                        PlaylistTrack.builder()
+                        PlaylistTrackEntity.builder()
                                 .id(
                                         PlaylistTrackKey.builder()
                                                 .playlistId(playlist.getId())
                                                 .trackId(track.getId())
-                                                .build()
-                                )
+                                                .build())
                                 .playlist(playlist)
                                 .track(track)
                                 .trackPosition((long) i)
-                                .build()
-                );
+                                .build());
             }
         }
         playlistTrackRepository.saveAll(playlistTracks);

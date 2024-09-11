@@ -3,13 +3,12 @@ package me.cyberproton.ocean.features.search;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor

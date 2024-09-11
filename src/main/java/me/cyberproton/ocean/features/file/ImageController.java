@@ -18,22 +18,18 @@ public class ImageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StreamingResponseBody> getById(@PathVariable Long id) {
-        StreamingResponseBody responseBody = fileService.streamToStreamingResponseBody(
-                StreamFileToBodyRequest
-                        .builder()
-                        .id(id)
-                        .build()
-        );
+        StreamingResponseBody responseBody =
+                fileService.streamToStreamingResponseBody(
+                        StreamFileToBodyRequest.builder().id(id).build());
         FileEntity file = fileService.getFile(id);
-        return ResponseEntity.ok().headers(b -> {
-            b.setContentLength(file.getSize());
-            b.setContentType(MediaType.parseMediaType(file.getMimetype()));
-            b.setContentDisposition(
-                    ContentDisposition
-                            .inline()
-                            .filename(file.getName())
-                            .build()
-            );
-        }).body(responseBody);
+        return ResponseEntity.ok()
+                .headers(
+                        b -> {
+                            b.setContentLength(file.getSize());
+                            b.setContentType(MediaType.parseMediaType(file.getMimetype()));
+                            b.setContentDisposition(
+                                    ContentDisposition.inline().filename(file.getName()).build());
+                        })
+                .body(responseBody);
     }
 }

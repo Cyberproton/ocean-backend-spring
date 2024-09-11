@@ -1,10 +1,9 @@
 package me.cyberproton.ocean.features.role;
 
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.annotations.V1ApiRestController;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @V1ApiRestController
@@ -18,7 +17,8 @@ public class UserRoleController {
     }
 
     @PutMapping
-    public Set<RoleResponse> assignRoles(@PathVariable Long userId, @RequestBody UpdateUserRoleRequest request) {
+    public Set<RoleResponse> assignRoles(
+            @PathVariable Long userId, @RequestBody UpdateUserRoleRequest request) {
         return roleService.assignUserRoles(userId, request);
     }
 }

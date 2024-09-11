@@ -1,14 +1,12 @@
 package me.cyberproton.ocean.domain;
 
-import lombok.Data;
+import java.io.Serial;
+import java.io.Serializable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.io.Serializable;
-
-@Data
 public class OffsetBasedPageRequest implements Pageable, Serializable {
-    private static final long serialVersionUID = -25822477129613575L;
+    @Serial private static final long serialVersionUID = -25822477129613575L;
     private final int limit;
     private final long offset;
     private final Sort sort;
@@ -44,13 +42,25 @@ public class OffsetBasedPageRequest implements Pageable, Serializable {
     }
 
     @Override
+    public long getOffset() {
+        return offset;
+    }
+
+    @Override
+    public Sort getSort() {
+        return sort;
+    }
+
+    @Override
     public Pageable next() {
         return new OffsetBasedPageRequest(offset + getPageSize(), getPageSize(), getSort());
     }
 
     @Override
     public Pageable previousOrFirst() {
-        return hasPrevious() ? new OffsetBasedPageRequest(offset - getPageSize(), getPageSize(), getSort()) : first();
+        return hasPrevious()
+                ? new OffsetBasedPageRequest(offset - getPageSize(), getPageSize(), getSort())
+                : first();
     }
 
     @Override
@@ -60,7 +70,8 @@ public class OffsetBasedPageRequest implements Pageable, Serializable {
 
     @Override
     public Pageable withPage(int pageNumber) {
-        return new OffsetBasedPageRequest((long) pageNumber * (long) getPageSize(), getPageSize(), getSort());
+        return new OffsetBasedPageRequest(
+                (long) pageNumber * (long) getPageSize(), getPageSize(), getSort());
     }
 
     @Override

@@ -30,32 +30,32 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<RefreshTokenResponse> refreshToken(
-            @Valid @RequestBody RefreshTokenRequest refreshTokenRequest
-    ) {
+            @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest));
     }
 
     @PostMapping("/verify-email/request")
-    public RequestVerifyEmailResponse verifyEmail(@AuthenticationPrincipal AppUserDetails userDetails) {
+    public RequestVerifyEmailResponse verifyEmail(
+            @AuthenticationPrincipal AppUserDetails userDetails) {
         return authService.requestVerifyEmail(userDetails.getUser());
     }
 
     @PostMapping("/verify-email/confirm")
     public ConfirmVerifyEmailResponse verifyEmail(
-            @RequestBody ConfirmVerifyEmailRequest request, @AuthenticationPrincipal AppUserDetails userDetails
-    ) {
+            @RequestBody ConfirmVerifyEmailRequest request,
+            @AuthenticationPrincipal AppUserDetails userDetails) {
         return authService.verifyEmail(userDetails.getUser(), request);
     }
 
     @PostMapping("/reset-password/request")
-    public ResetPasswordResponse requestResetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public ResetPasswordResponse requestResetPassword(
+            @Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         return authService.requestResetPassword(resetPasswordRequest);
     }
 
     @PostMapping("/reset-password/confirm")
     public ConfirmResetPasswordResponse confirmResetPassword(
-            @RequestBody ConfirmResetPasswordRequest confirmResetPasswordRequest
-    ) {
+            @RequestBody ConfirmResetPasswordRequest confirmResetPasswordRequest) {
 
         return authService.confirmResetPassword(confirmResetPasswordRequest);
     }

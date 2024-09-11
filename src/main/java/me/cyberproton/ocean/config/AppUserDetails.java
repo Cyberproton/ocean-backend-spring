@@ -1,17 +1,16 @@
 package me.cyberproton.ocean.config;
 
+import java.util.Collection;
 import lombok.AllArgsConstructor;
-import me.cyberproton.ocean.features.user.User;
+import me.cyberproton.ocean.features.user.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-
 @AllArgsConstructor
 public class AppUserDetails implements UserDetails {
-    private final User user;
+    private final UserEntity user;
 
-    public User getUser() {
+    public UserEntity getUser() {
         return user;
     }
 

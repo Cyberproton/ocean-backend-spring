@@ -1,7 +1,6 @@
 package me.cyberproton.ocean.features.role;
 
 import jakarta.persistence.*;
-
 import java.util.Set;
 
 @Entity

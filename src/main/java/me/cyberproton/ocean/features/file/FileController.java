@@ -34,8 +34,7 @@ public class FileController {
     @PostMapping("/upload")
     public FileResponse upload(
             @RequestPart("attachment") MultipartFile file,
-            @AuthenticationPrincipal AppUserDetails userDetails
-    ) {
+            @AuthenticationPrincipal AppUserDetails userDetails) {
         FileEntity res = fileService.uploadFileToDefaultBucket(file, userDetails.getUser());
         return FileResponse.builder()
                 .id(res.getId())
@@ -50,22 +49,20 @@ public class FileController {
 
     @GetMapping("/download/{id}")
     public ResponseEntity<StreamingResponseBody> download(@PathVariable Long id) {
-        StreamingResponseBody responseBody = fileService.streamToStreamingResponseBody(
-                StreamFileToBodyRequest
-                        .builder()
-                        .id(id)
-                        .build()
-        );
+        StreamingResponseBody responseBody =
+                fileService.streamToStreamingResponseBody(
+                        StreamFileToBodyRequest.builder().id(id).build());
         FileEntity file = fileService.getFile(id);
-        return ResponseEntity.ok().headers(b -> {
-            b.setContentLength(file.getSize());
-            b.setContentType(MediaType.parseMediaType(file.getMimetype()));
-            b.setContentDisposition(
-                    ContentDisposition
-                            .attachment()
-                            .filename(file.getName())
-                            .build()
-            );
-        }).body(responseBody);
+        return ResponseEntity.ok()
+                .headers(
+                        b -> {
+                            b.setContentLength(file.getSize());
+                            b.setContentType(MediaType.parseMediaType(file.getMimetype()));
+                            b.setContentDisposition(
+                                    ContentDisposition.attachment()
+                                            .filename(file.getName())
+                                            .build());
+                        })
+                .body(responseBody);
     }
 }

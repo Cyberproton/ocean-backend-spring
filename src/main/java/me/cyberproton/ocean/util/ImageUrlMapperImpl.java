@@ -11,25 +11,21 @@ public class ImageUrlMapperImpl implements ImageUrlMapper {
     private final UriComponentsBuilder builder;
 
     public ImageUrlMapperImpl(ExternalAppConfig externalAppConfig) {
-        this.builder = UriComponentsBuilder.fromHttpUrl(externalAppConfig.domain())
-                                           .pathSegment(externalAppConfig.apiV1Path())
-                                           .pathSegment("images");
+        this.builder =
+                UriComponentsBuilder.fromHttpUrl(externalAppConfig.domain())
+                        .pathSegment(externalAppConfig.apiV1Path())
+                        .pathSegment("images");
     }
 
-    @Nullable
-    public String mapFileIdToUrl(@Nullable Long id) {
+    @Nullable public String mapFileIdToUrl(@Nullable Long id) {
         if (id == null) {
             return null;
         }
 
-        return builder.cloneBuilder()
-                      .pathSegment(id.toString())
-                      .build()
-                      .toUriString();
+        return builder.cloneBuilder().pathSegment(id.toString()).build().toUriString();
     }
 
-    @Nullable
-    public String mapFileToUrl(@Nullable FileEntity file) {
+    @Nullable public String mapFileToUrl(@Nullable FileEntity file) {
         if (file == null) {
             return null;
         }

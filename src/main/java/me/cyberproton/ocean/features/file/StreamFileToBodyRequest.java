@@ -4,9 +4,4 @@ import lombok.Builder;
 import lombok.NonNull;
 
 @Builder
-public record StreamFileToBodyRequest(
-        @NonNull
-        Long id,
-        String range
-) {
-}
+public record StreamFileToBodyRequest(@NonNull Long id, String range) {}

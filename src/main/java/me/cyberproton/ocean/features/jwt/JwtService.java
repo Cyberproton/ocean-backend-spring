@@ -6,12 +6,11 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.Nullable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
+import javax.crypto.SecretKey;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
@@ -20,17 +19,13 @@ public class JwtService {
 
     public JwtService(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
-        this.jwtParser = Jwts.parser()
-                             .verifyWith(getSecretKey())
-                             .build();
+        this.jwtParser = Jwts.parser().verifyWith(getSecretKey()).build();
     }
 
-    @Nullable
-    public String getEmailFromToken(String token) {
+    @Nullable public String getEmailFromToken(String token) {
         try {
             Jws<Claims> claims = parseToken(token).accept(Jws.CLAIMS);
-            return claims.getPayload()
-                         .getSubject();
+            return claims.getPayload().getSubject();
         } catch (Exception e) {
             return null;
         }
@@ -50,36 +45,34 @@ public class JwtService {
 
     private String buildToken(String email, long expiration, Map<String, ?> extraClaims) {
         return Jwts.builder()
-                   .claims(extraClaims)
-                   .subject(email)
-                   .signWith(getSecretKey())
-                   .issuedAt(new Date())
-                   .expiration(new Date(System.currentTimeMillis() + expiration))
-                   .compact();
+                .claims(extraClaims)
+                .subject(email)
+                .signWith(getSecretKey())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .compact();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
             String username = getEmailFromToken(token);
-            return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+            return username != null
+                    && username.equals(userDetails.getUsername())
+                    && !isTokenExpired(token);
         } catch (Exception e) {
             return false;
         }
     }
 
     private boolean isTokenExpired(String token) {
-        return parseToken(token).getPayload()
-                                .getExpiration()
-                                .before(new Date());
+        return parseToken(token).getPayload().getExpiration().before(new Date());
     }
 
     private Jws<Claims> parseToken(String token) {
-        return jwtParser.parse(token)
-                        .accept(Jws.CLAIMS);
+        return jwtParser.parse(token).accept(Jws.CLAIMS);
     }
 
     private SecretKey getSecretKey() {
-        return Keys.hmacShaKeyFor(jwtConfig.secret()
-                                           .getBytes());
+        return Keys.hmacShaKeyFor(jwtConfig.secret().getBytes());
     }
 }

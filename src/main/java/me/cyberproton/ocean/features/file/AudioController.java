@@ -1,5 +1,6 @@
 package me.cyberproton.ocean.features.file;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.annotations.V1ApiRestController;
 import org.springframework.http.HttpRange;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.util.List;
-
 @AllArgsConstructor
 @V1ApiRestController
 @RequestMapping("/media")
@@ -23,15 +22,15 @@ public class AudioController {
 
     @GetMapping(value = "{id}", produces = "audio/mp3")
     public ResponseEntity<StreamingResponseBody> getAudio(
-            @PathVariable Long id,
-            @RequestHeader(value = "Range", required = false) String range
-    ) {
+            @PathVariable Long id, @RequestHeader(value = "Range", required = false) String range) {
         HttpRange httpRange;
         if (range != null) {
             try {
                 List<HttpRange> ranges = HttpRange.parseRanges(range);
                 if (ranges.size() > 1) {
-                    throw new ResponseStatusException(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE, "Multiple ranges are not supported");
+                    throw new ResponseStatusException(
+                            HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
+                            "Multiple ranges are not supported");
                 }
                 httpRange = ranges.getFirst();
             } catch (IllegalArgumentException e) {
@@ -40,26 +39,36 @@ public class AudioController {
         } else {
             httpRange = null;
         }
-        StreamingResponseBody responseBody = fileService.streamToStreamingResponseBody(
-                StreamFileToBodyRequest
-                        .builder()
-                        .id(id)
-                        .range(range)
-                        .build()
-        );
+        StreamingResponseBody responseBody =
+                fileService.streamToStreamingResponseBody(
+                        StreamFileToBodyRequest.builder().id(id).range(range).build());
         FileEntity file = fileService.getFile(id);
         // Parse size from range
-        long size = range == null ? file.getSize() : httpRange.getRangeEnd(file.getSize()) - httpRange.getRangeStart(file.getSize()) + 1;
-        String contentRange = range == null
-                ? null
-                : "bytes=" + httpRange.getRangeStart(file.getSize()) + "-" + httpRange.getRangeEnd(file.getSize()) + "/" + file.getSize();
+        long size =
+                range == null
+                        ? file.getSize()
+                        : httpRange.getRangeEnd(file.getSize())
+                                - httpRange.getRangeStart(file.getSize())
+                                + 1;
+        String contentRange =
+                range == null
+                        ? null
+                        : "bytes="
+                                + httpRange.getRangeStart(file.getSize())
+                                + "-"
+                                + httpRange.getRangeEnd(file.getSize())
+                                + "/"
+                                + file.getSize();
         String acceptRanges = range == null ? null : "bytes";
         HttpStatus status = range == null ? HttpStatus.OK : HttpStatus.PARTIAL_CONTENT;
-        return ResponseEntity.status(status).headers(b -> {
-            b.setContentLength(size);
-            b.setContentType(MediaType.parseMediaType(file.getMimetype()));
-            b.set("Accept-Ranges", acceptRanges);
-            b.set("Content-Range", contentRange);
-        }).body(responseBody);
+        return ResponseEntity.status(status)
+                .headers(
+                        b -> {
+                            b.setContentLength(size);
+                            b.setContentType(MediaType.parseMediaType(file.getMimetype()));
+                            b.set("Accept-Ranges", acceptRanges);
+                            b.set("Content-Range", contentRange);
+                        })
+                .body(responseBody);
     }
 }

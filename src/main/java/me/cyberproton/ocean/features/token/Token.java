@@ -1,14 +1,13 @@
 package me.cyberproton.ocean.features.token;
 
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import me.cyberproton.ocean.features.user.User;
+import me.cyberproton.ocean.features.user.UserEntity;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.util.Date;
 
 @Data
 @Builder
@@ -16,9 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 public class Token {
-    @Id
-    @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue private Long id;
 
     private TokenType type;
 
@@ -31,6 +28,5 @@ public class Token {
     @CreationTimestamp
     private Date createdAt;
 
-    @ManyToOne
-    private User user;
+    @ManyToOne private UserEntity user;
 }

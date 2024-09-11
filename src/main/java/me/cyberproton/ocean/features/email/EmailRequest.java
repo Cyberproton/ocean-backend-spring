@@ -9,10 +9,7 @@ import lombok.NonNull;
 @Builder
 @AllArgsConstructor
 public class EmailRequest {
-    @NonNull
-    private String to;
-    @NonNull
-    private String subject;
-    @NonNull
-    private String content;
+    @NonNull private String to;
+    @NonNull private String subject;
+    @NonNull private String content;
 }

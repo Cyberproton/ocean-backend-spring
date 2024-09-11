@@ -1,11 +1,10 @@
 package me.cyberproton.ocean.features.recordlabel;
 
 import jakarta.validation.Valid;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import me.cyberproton.ocean.annotations.V1ApiRestController;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @V1ApiRestController
@@ -24,15 +23,14 @@ public class RecordLabelController {
     }
 
     @PostMapping
-    public RecordLabelResponse createRecordLabel(@Valid @RequestBody CreateOrUpdateRecordLabelRequest request) {
+    public RecordLabelResponse createRecordLabel(
+            @Valid @RequestBody CreateOrUpdateRecordLabelRequest request) {
         return recordLabelService.createRecordLabel(request);
     }
 
     @PutMapping("/{id}")
     public RecordLabelResponse updateRecordLabel(
-            @PathVariable Long id,
-            @Valid @RequestBody CreateOrUpdateRecordLabelRequest request
-    ) {
+            @PathVariable Long id, @Valid @RequestBody CreateOrUpdateRecordLabelRequest request) {
         return recordLabelService.updateRecordLabel(id, request);
     }
 

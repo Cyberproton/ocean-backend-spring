@@ -1,0 +1,68 @@
+spring:
+  main:
+    lazy-initialization: true
+  datasource:
+    hikari:
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:20000}
+      maximum-pool-size: ${DB_MAXIMUM_POOL_SIZE:5}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      transport:
+        protocol: smtp
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          from: ${MAIL_FROM}
+          from-name: ${MAIL_FROM_NAME}
+    test-connection: false
+    default-encoding: UTF-8
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL}
+    username: ${ELASTICSEARCH_USERNAME}
+    password: ${ELASTICSEARCH_PASSWORD}
+logging:
+  level:
+    org.springframework: ERROR
+    me.cyberproton: DEBUG
+    org.jooq.tools.LoggerListener: DEBUG
+app:
+  env: ${APP_ENV}
+  domain: ${APP_DOMAIN}
+  api-v1-path: ${APP_API_V1_PATH}
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiration-in-ms: 900000
+  refresh-token-expiration-in-ms: 604800000
+auth:
+  disableCsrf: true
+  disable-cors: true
+token:
+  password-reset:
+    intervalInMilliseconds: 30000
+    maxAgeInMilliseconds: 300000
+  email-verification:
+    interval-in-milliseconds: 30000
+    max-age-in-milliseconds: 300000
+file:
+  endpoint: ${FILE_ENDPOINT}
+  region: ${FILE_REGION}
+  bucket: ${FILE_BUCKET_NAME}
+  accessKey: ${FILE_ACCESS_KEY}
+  secretKey: ${FILE_SECRET_KEY}

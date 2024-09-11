@@ -1,11 +1,10 @@
 package me.cyberproton.ocean.features.file;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @Builder
@@ -20,4 +19,7 @@ public class FileResponse {
     private Long owner;
     private boolean isPublic;
     private Date createdAt;
+
+    private Integer width;
+    private Integer height;
 }

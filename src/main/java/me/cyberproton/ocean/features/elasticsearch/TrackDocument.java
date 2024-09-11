@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.cyberproton.ocean.features.file.FileDocument;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,21 +14,15 @@ import org.springframework.data.elasticsearch.annotations.Field;
 @Data
 @Document(indexName = "track")
 public class TrackDocument {
-    @Id
-    private Long id;
+    @Id private Long id;
 
-    @Field
     private String name;
 
-    @Field
     private Integer trackNumber;
 
-    @Field
     private Integer duration;
 
-    @Field
-    private Long fileId;
+    private FileDocument file;
 
-    @Field
     private Long albumId;
 }
