@@ -32,7 +32,6 @@ public class MyTrackController {
     public void likeTracks(
             @AuthenticationPrincipal AppUserDetails userDetails,
             @Valid @RequestBody LikeOrUnlikeTracksRequest request) {
-        System.out.println("req: " + request);
         userTrackService.likeTracks(userDetails.getUser(), request.getTrackIds());
     }
 

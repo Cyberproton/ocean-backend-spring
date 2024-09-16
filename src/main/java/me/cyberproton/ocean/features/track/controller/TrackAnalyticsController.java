@@ -1,8 +1,9 @@
-package me.cyberproton.ocean.features.analytics;
+package me.cyberproton.ocean.features.track.controller;
 
 import lombok.AllArgsConstructor;
 
 import me.cyberproton.ocean.annotations.V1ApiRestController;
+import me.cyberproton.ocean.features.track.service.TrackAnalyticsService;
 
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;

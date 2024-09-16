@@ -1,8 +1,10 @@
-package me.cyberproton.ocean.features.analytics;
+package me.cyberproton.ocean.features.track.service;
 
 import lombok.AllArgsConstructor;
 
+import me.cyberproton.ocean.features.track.entity.TrackAnalyticsEntity;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
+import me.cyberproton.ocean.features.track.repository.TrackAnalyticsRepository;
 import me.cyberproton.ocean.features.track.repository.TrackRepository;
 
 import org.springframework.http.HttpStatus;

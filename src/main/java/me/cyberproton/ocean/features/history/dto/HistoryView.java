@@ -8,7 +8,7 @@ import me.cyberproton.ocean.features.history.entity.HistoryEntity;
 import me.cyberproton.ocean.features.history.entity.HistoryType;
 import me.cyberproton.ocean.features.playlist.dto.PlaylistView;
 import me.cyberproton.ocean.features.profile.dto.BaseProfileView;
-import me.cyberproton.ocean.features.track.dto.TrackView;
+import me.cyberproton.ocean.features.track.view.TrackView;
 
 import java.util.Date;
 

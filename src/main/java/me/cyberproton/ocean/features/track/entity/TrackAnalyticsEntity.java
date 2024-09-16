@@ -1,10 +1,8 @@
-package me.cyberproton.ocean.features.analytics;
+package me.cyberproton.ocean.features.track.entity;
 
 import jakarta.persistence.*;
 
 import lombok.*;
-
-import me.cyberproton.ocean.features.track.entity.TrackEntity;
 
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;

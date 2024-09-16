@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 
 import me.cyberproton.ocean.features.album.entity.AlbumDocument;
 import me.cyberproton.ocean.features.artist.ArtistDocument;
-import me.cyberproton.ocean.features.elasticsearch.TrackDocument;
 import me.cyberproton.ocean.features.playlist.entity.PlaylistDocument;
+import me.cyberproton.ocean.features.track.entity.TrackDocument;
 import me.cyberproton.ocean.features.user.UserDocument;
 
 import org.springframework.context.ApplicationListener;

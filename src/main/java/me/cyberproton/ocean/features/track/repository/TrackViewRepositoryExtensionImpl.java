@@ -10,9 +10,9 @@ import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 
 import me.cyberproton.ocean.domain.BaseQuery;
-import me.cyberproton.ocean.features.track.dto.TrackView;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
 import me.cyberproton.ocean.features.track.entity.TrackEntity_;
+import me.cyberproton.ocean.features.track.view.TrackView;
 import me.cyberproton.ocean.features.user.UserEntity;
 
 @AllArgsConstructor

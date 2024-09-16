@@ -2,10 +2,10 @@ package me.cyberproton.ocean.features.track.util;
 
 import me.cyberproton.ocean.features.album.util.AlbumMapper;
 import me.cyberproton.ocean.features.artist.ArtistMapper;
-import me.cyberproton.ocean.features.elasticsearch.TrackDocument;
 import me.cyberproton.ocean.features.track.dto.TrackResponse;
-import me.cyberproton.ocean.features.track.dto.TrackView;
+import me.cyberproton.ocean.features.track.entity.TrackDocument;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
+import me.cyberproton.ocean.features.track.view.TrackView;
 import me.cyberproton.ocean.mapper.MapStructUtils;
 
 import org.mapstruct.Mapper;

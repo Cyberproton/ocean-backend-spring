@@ -2,12 +2,19 @@ package me.cyberproton.ocean.features.track.repository;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import me.cyberproton.ocean.features.elasticsearch.TrackDocument;
+
 import me.cyberproton.ocean.features.file.FileMapper;
+import me.cyberproton.ocean.features.track.dto.TrackLike;
+import me.cyberproton.ocean.features.track.entity.TrackDocument;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
 import me.cyberproton.ocean.repository.AbstractElasticRepository;
+
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TrackElasticRepository extends AbstractElasticRepository<TrackEntity, TrackDocument> {
@@ -29,6 +36,7 @@ public class TrackElasticRepository extends AbstractElasticRepository<TrackEntit
                 .duration(track.getDuration())
                 .file(fileMapper.entityToDocument(track.getFile()))
                 .albumId(track.getAlbum().getId())
+                .numberOfLikes((long) track.getLikedUsers().size())
                 .build();
     }
 
@@ -36,5 +44,19 @@ public class TrackElasticRepository extends AbstractElasticRepository<TrackEntit
     @Override
     protected String getEntityId(TrackEntity entity) {
         return entity.getId().toString();
+    }
+
+    public void changeNumberOfLikes(List<TrackLike> trackLikes) {
+        elasticsearchOperations.bulkUpdate(
+                trackLikes.stream()
+                        .map(
+                                trackLike ->
+                                        UpdateQuery.builder(trackLike.trackId().toString())
+                                                .withScript(
+                                                        "ctx._source.numberOfLikes = "
+                                                                + trackLike.numberOfLikes())
+                                                .build())
+                        .toList(),
+                IndexCoordinates.of("track"));
     }
 }

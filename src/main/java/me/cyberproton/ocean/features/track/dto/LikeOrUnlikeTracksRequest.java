@@ -14,6 +14,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LikeOrUnlikeTracksRequest {
-    @Size(min = 1, max = 20)
+    @Size(min = 1, max = 10)
     private Set<Long> trackIds;
 }
