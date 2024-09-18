@@ -46,4 +46,9 @@ public class TrackController {
     public Long deleteTrack(@PathVariable Long id) {
         return trackService.deleteTrack(id);
     }
+
+    @GetMapping("/top")
+    public PaginationResponse<TrackResponse> getTopTracks(BaseQuery query) {
+        return trackService.getTopTracks(query);
+    }
 }

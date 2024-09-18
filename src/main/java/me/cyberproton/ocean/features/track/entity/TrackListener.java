@@ -6,20 +6,20 @@ import jakarta.persistence.PostUpdate;
 
 import lombok.AllArgsConstructor;
 
-import me.cyberproton.ocean.features.track.repository.TrackElasticRepository;
+import me.cyberproton.ocean.features.track.repository.CustomTrackElasticRepository;
 
 @AllArgsConstructor
 public class TrackListener {
-    private final TrackElasticRepository trackElasticRepository;
+    private final CustomTrackElasticRepository customTrackElasticRepository;
 
     @PostPersist
     @PostUpdate
     public void onTrackCreatedOrUpdated(TrackEntity track) {
-        trackElasticRepository.save(track);
+        customTrackElasticRepository.save(track);
     }
 
     @PostRemove
     public void onTrackDeleted(TrackEntity track) {
-        trackElasticRepository.delete(track);
+        customTrackElasticRepository.delete(track);
     }
 }

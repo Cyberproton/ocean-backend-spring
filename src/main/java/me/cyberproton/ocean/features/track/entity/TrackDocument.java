@@ -1,5 +1,6 @@
 package me.cyberproton.ocean.features.track.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Id;
 
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.NoArgsConstructor;
 import me.cyberproton.ocean.features.file.FileDocument;
 
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.ScriptedField;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,9 +30,13 @@ public class TrackDocument {
 
     private Long albumId;
 
-    private Long numberOfPlays;
+    @Nullable private Long numberOfPlays;
 
-    private Long numberOfLikes;
+    @Nullable private Long playTotalTimestampInMinutes;
 
-    @ScriptedField private Long popularity;
+    @Nullable private Long numberOfLikes;
+
+    @Nullable private Long likeTotalTimestampInMinutes;
+
+    @Nullable private Long popularity;
 }

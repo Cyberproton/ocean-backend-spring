@@ -11,14 +11,17 @@ import me.cyberproton.ocean.features.artist.ArtistEntity;
 import me.cyberproton.ocean.features.artist.ArtistRepository;
 import me.cyberproton.ocean.features.track.dto.CreateOrUpdateTrackRequest;
 import me.cyberproton.ocean.features.track.dto.TrackResponse;
+import me.cyberproton.ocean.features.track.entity.TrackDocument;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
 import me.cyberproton.ocean.features.track.event.TrackEvent;
+import me.cyberproton.ocean.features.track.repository.TrackElasticsearchRepository;
 import me.cyberproton.ocean.features.track.repository.TrackRepository;
 import me.cyberproton.ocean.features.track.util.TrackMapper;
-import me.cyberproton.ocean.util.ImageUrlMapper;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,9 +36,9 @@ public class TrackService {
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final ImageUrlMapper imageUrlMapper;
     private final ExternalAppConfig externalAppConfig;
     private final TrackMapper trackMapper;
+    private final TrackElasticsearchRepository trackElasticsearchRepository;
 
     public PaginationResponse<TrackResponse> getTracks(BaseQuery query) {
         Pageable pageable = query.toOffsetBasedPageable();
@@ -117,5 +120,18 @@ public class TrackService {
         trackRepository.deleteById(id);
         eventPublisher.publishEvent(new TrackEvent(TrackEvent.Type.DELETE, track));
         return id;
+    }
+
+    public PaginationResponse<TrackResponse> getTopTracks(BaseQuery query) {
+        Pageable pageable =
+                query.toOffsetBasedPageable(Sort.by(Sort.Order.desc("popularity").nullsLast()));
+        Page<TrackDocument> trackDocuments = trackElasticsearchRepository.findAll(pageable);
+        return PaginationResponse.fromPage(
+                trackDocuments.map(trackMapper::documentToResponse),
+                UriComponentsBuilder.fromHttpUrl(externalAppConfig.domain())
+                        .pathSegment(externalAppConfig.apiV1Path())
+                        .pathSegment("tracks")
+                        .pathSegment("top")
+                        .toUriString());
     }
 }

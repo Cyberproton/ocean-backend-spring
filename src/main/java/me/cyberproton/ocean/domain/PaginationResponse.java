@@ -1,15 +1,19 @@
 package me.cyberproton.ocean.domain;
 
-import java.util.Collection;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+
 import me.cyberproton.ocean.util.PaginationUtils;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHits;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Builder
@@ -21,6 +25,10 @@ public final class PaginationResponse<T> {
     private final String previous;
     private final long total;
     private final Collection<T> items;
+
+    public static <T> PaginationResponse<T> empty() {
+        return PaginationResponse.<T>builder().items(List.of()).limit(0).offset(0).total(0).build();
+    }
 
     public static <T> PaginationResponse<T> of(
             Collection<T> items, long limit, long offset, long total, String baseUrl) {

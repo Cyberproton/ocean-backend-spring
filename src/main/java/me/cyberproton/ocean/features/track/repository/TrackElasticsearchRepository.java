@@ -8,4 +8,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface TrackElasticsearchRepository extends ElasticsearchRepository<TrackDocument, Long> {
     Page<TrackDocument> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    Page<TrackDocument> findTopByOrderByPopularity(Pageable pageable);
 }

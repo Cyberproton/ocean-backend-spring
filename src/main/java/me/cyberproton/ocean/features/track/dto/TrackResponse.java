@@ -13,5 +13,6 @@ public record TrackResponse(
         String name,
         Integer trackNumber,
         Integer duration,
+        Long popularity,
         AlbumResponse album,
         List<ProfileResponse> artists) {}

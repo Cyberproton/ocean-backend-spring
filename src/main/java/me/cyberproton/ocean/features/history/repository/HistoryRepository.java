@@ -33,4 +33,6 @@ public interface HistoryRepository extends JpaRepository<HistoryEntity, Long> {
                     "SELECT COUNT(h) FROM history h WHERE h.user.id = :userId AND (:#{#query.type} IS NULL OR h.type = :#{#query.type})")
     List<HistoryEntity> findAllEfficientPagination(
             Pageable pageable, @Param("userId") Long userId, @Param("query") HistoryQuery query);
+
+    Long countByTrackId(Long trackId);
 }

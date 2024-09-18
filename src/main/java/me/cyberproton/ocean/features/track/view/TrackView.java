@@ -23,19 +23,4 @@ public interface TrackView {
 
     @Mapping(value = "artists.user.profile", fetch = FetchStrategy.MULTISET)
     List<BaseProfileView> getArtists();
-
-    //    @MappingSubquery(TrackPlayCountSubqueryProvider.class)
-    //    Long numberOfPlays();
-    //
-    //    class TrackPlayCountSubqueryProvider implements SubqueryProvider {
-    //        @Override
-    //        public <T> T createSubquery(SubqueryInitiator<T> subqueryInitiator) {
-    //            return subqueryInitiator
-    //                    .from(TrackAnalyticsEntity.class, "tae")
-    //                    .select("numberOfPlays")
-    //                    .where("tae.track.id")
-    //                    .eqExpression("id")
-    //                    .end();
-    //        }
-    //    }
 }

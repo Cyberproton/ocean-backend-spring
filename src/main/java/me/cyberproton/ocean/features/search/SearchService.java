@@ -22,7 +22,7 @@ import me.cyberproton.ocean.features.profile.dto.ProfileResponse;
 import me.cyberproton.ocean.features.track.dto.TrackResponse;
 import me.cyberproton.ocean.features.track.entity.TrackDocument;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
-import me.cyberproton.ocean.features.track.repository.TrackElasticRepository;
+import me.cyberproton.ocean.features.track.repository.CustomTrackElasticRepository;
 import me.cyberproton.ocean.features.track.repository.TrackRepository;
 import me.cyberproton.ocean.features.track.util.TrackMapper;
 import me.cyberproton.ocean.features.user.UserDocument;
@@ -58,7 +58,7 @@ public class SearchService {
     private final PlaylistElasticRepository playlistElasticRepository;
     private final UserElasticRepository userElasticRepository;
     private final TrackRepository trackRepository;
-    private final TrackElasticRepository trackElasticRepository;
+    private final CustomTrackElasticRepository customTrackElasticRepository;
     private final ImageUrlMapper imageUrlMapper;
     private final AlbumMapper albumMapper;
     private final ArtistMapper artistMapper;
@@ -231,7 +231,7 @@ public class SearchService {
         } while (playlistPage.hasNext());
         Page<TrackEntity> trackPage = trackRepository.findAll(PageRequest.of(0, 20));
         do {
-            trackElasticRepository.saveAll(trackPage);
+            customTrackElasticRepository.saveAll(trackPage);
             trackPage = trackRepository.findAll(trackPage.nextPageable());
         } while (trackPage.hasNext());
     }

@@ -24,11 +24,13 @@ import me.cyberproton.ocean.features.history.repository.HistoryViewRepository;
 import me.cyberproton.ocean.features.history.util.HistoryMapper;
 import me.cyberproton.ocean.features.playlist.entity.PlaylistEntity;
 import me.cyberproton.ocean.features.playlist.repository.PlaylistRepository;
+import me.cyberproton.ocean.features.track.dto.TrackPlayDto;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
+import me.cyberproton.ocean.features.track.event.TrackPlayChangeEvent;
 import me.cyberproton.ocean.features.track.repository.TrackRepository;
 import me.cyberproton.ocean.features.user.UserEntity;
-import me.cyberproton.ocean.util.ImageUrlMapper;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -49,10 +51,10 @@ public class HistoryService {
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
     private final PlaylistRepository playlistRepository;
-    private final ImageUrlMapper imageUrlMapper;
     private final ExternalAppConfig externalAppConfig;
     private final HistoryMapper historyMapper;
     private final HistoryViewRepository historyViewRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public PaginationResponse<HistoryResponse> getHistories(UserEntity user, HistoryQuery query) {
         Page<HistoryResponse> page =
@@ -102,10 +104,24 @@ public class HistoryService {
                         .orElse(null);
 
         if (existingHistory != null) {
-            existingHistory.setUpdatedAt(new Date());
-            historyRepository.save(existingHistory);
-            return historyMapper.entityToResponse(existingHistory);
+            // If the request is to override the old record, update the updatedAt field and return
+            // the existing history
+            if (request.type().isOverrideOldRecord()) {
+                existingHistory.setUpdatedAt(new Date());
+                historyRepository.save(existingHistory);
+                return historyMapper.entityToResponse(existingHistory);
+            }
+
+            // If the request is to create a new record after a certain timestamp, check if the
+            // existing record is still valid
+            if (request.type().getCreateNewRecordAfterTimestamp() > 0
+                    && System.currentTimeMillis() - existingHistory.getUpdatedAt().getTime()
+                            < request.type().getCreateNewRecordAfterTimestamp()) {
+                return historyMapper.entityToResponse(existingHistory);
+            }
         }
+
+        // Create new record after the check
 
         if (request.type() == HistoryType.TRACK) {
             track =
@@ -154,6 +170,18 @@ public class HistoryService {
                         .build();
 
         historyRepository.save(history);
+
+        if (request.type() == HistoryType.TRACK) {
+            long numberOfPlays = historyRepository.countByTrackId(track.getId());
+            eventPublisher.publishEvent(
+                    new TrackPlayChangeEvent(
+                            List.of(
+                                    new TrackPlayDto(
+                                            track.getId(),
+                                            numberOfPlays,
+                                            System.currentTimeMillis()))));
+        }
+
         return historyMapper.entityToResponse(history);
     }
 
