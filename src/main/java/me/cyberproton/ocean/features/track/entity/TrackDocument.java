@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import me.cyberproton.ocean.features.file.FileDocument;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +29,7 @@ public class TrackDocument {
 
     private FileDocument file;
 
-    private Long albumId;
+    @Field private Long albumId;
 
     @Nullable private Long numberOfPlays;
 

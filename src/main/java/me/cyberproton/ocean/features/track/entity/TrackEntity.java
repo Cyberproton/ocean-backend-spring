@@ -76,6 +76,9 @@ public class TrackEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<UserEntity> likedUsers;
 
+    @OneToOne(mappedBy = "track", fetch = FetchType.LAZY)
+    private TrackAnalyticsEntity analytics;
+
     public void addArtist(ArtistEntity artist) {
         artists.add(artist);
         artist.getTracks().add(this);

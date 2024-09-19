@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HistoryRepository extends JpaRepository<HistoryEntity, Long> {
-    Optional<HistoryEntity> findByUserIdAndTrackIdAndAlbumIdAndArtistIdAndPlaylistId(
-            Long userId, Long trackId, Long albumId, Long artistId, Long playlistId);
+    Optional<HistoryEntity>
+            findFirstByUserIdAndTrackIdAndAlbumIdAndArtistIdAndPlaylistIdOrderByUpdatedAtDesc(
+                    Long userId, Long trackId, Long albumId, Long artistId, Long playlistId);
 
     @Query(
             value =

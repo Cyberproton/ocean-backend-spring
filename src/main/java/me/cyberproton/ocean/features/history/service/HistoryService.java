@@ -95,7 +95,7 @@ public class HistoryService {
 
         HistoryEntity existingHistory =
                 historyRepository
-                        .findByUserIdAndTrackIdAndAlbumIdAndArtistIdAndPlaylistId(
+                        .findFirstByUserIdAndTrackIdAndAlbumIdAndArtistIdAndPlaylistIdOrderByUpdatedAtDesc(
                                 user.getId(),
                                 request.trackId(),
                                 request.albumId(),

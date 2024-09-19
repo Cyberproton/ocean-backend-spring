@@ -2,7 +2,7 @@ package me.cyberproton.ocean.features.track.view;
 
 import com.blazebit.persistence.view.*;
 
-import me.cyberproton.ocean.features.album.dto.BaseAlbumView;
+import me.cyberproton.ocean.features.album.dto.AlbumViewWithCovers;
 import me.cyberproton.ocean.features.profile.dto.BaseProfileView;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
 
@@ -19,8 +19,11 @@ public interface TrackView {
 
     Integer getDuration();
 
-    BaseAlbumView getAlbum();
+    AlbumViewWithCovers getAlbum();
 
     @Mapping(value = "artists.user.profile", fetch = FetchStrategy.MULTISET)
     List<BaseProfileView> getArtists();
+
+    @Mapping("analytics.popularity")
+    Long getPopularity();
 }

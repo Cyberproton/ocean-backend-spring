@@ -22,8 +22,25 @@ public class TrackAnalyticsEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private TrackEntity track;
 
+    @Builder.Default
     @Column(nullable = false, columnDefinition = "bigint default 0")
-    private Long numberOfPlays;
+    private Long numberOfPlays = 0L;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "bigint default 0")
+    private Long playTotalTimestampInMinutes = 0L;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "bigint default 0")
+    private Long numberOfLikes = 0L;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "bigint default 0")
+    private Long likeTotalTimestampInMinutes = 0L;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "bigint default 0")
+    private Long popularity = 0L;
 
     @Column(nullable = false)
     @UpdateTimestamp
