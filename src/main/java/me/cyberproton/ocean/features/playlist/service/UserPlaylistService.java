@@ -7,9 +7,13 @@ import me.cyberproton.ocean.features.playlist.dto.CreateOrUpdatePlaylistRequest;
 import me.cyberproton.ocean.features.playlist.dto.PlaylistResponse;
 import me.cyberproton.ocean.features.playlist.entity.PlaylistEntity;
 import me.cyberproton.ocean.features.playlist.entity.PlaylistTrackEntity;
+import me.cyberproton.ocean.features.playlist.entity.SavedPlaylistEntity;
+import me.cyberproton.ocean.features.playlist.entity.SavedPlaylistEntityKey;
 import me.cyberproton.ocean.features.playlist.event.PlaylistEvent;
+import me.cyberproton.ocean.features.playlist.event.PlaylistSavedEvent;
 import me.cyberproton.ocean.features.playlist.repository.PlaylistRepository;
 import me.cyberproton.ocean.features.playlist.repository.PlaylistViewRepository;
+import me.cyberproton.ocean.features.playlist.repository.SavedPlaylistRepository;
 import me.cyberproton.ocean.features.playlist.util.PlaylistMapper;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
 import me.cyberproton.ocean.features.track.repository.TrackRepository;
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 public class UserPlaylistService {
     private final PlaylistRepository playlistRepository;
     private final PlaylistViewRepository playlistViewRepository;
+    private final SavedPlaylistRepository savedPlaylistRepository;
     private final TrackRepository trackRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final PlaylistMapper playlistMapper;
@@ -91,15 +96,43 @@ public class UserPlaylistService {
         }
         playlists.forEach(playlist -> playlist.addSavedUser(user));
         playlistRepository.saveAll(playlists);
+
+        long currentTimestamp = System.currentTimeMillis();
+        List<PlaylistSavedEvent.SavedPlaylist> savedPlaylists =
+                playlists.stream()
+                        .map(
+                                playlist ->
+                                        new PlaylistSavedEvent.SavedPlaylist(
+                                                playlist.getId(),
+                                                PlaylistSavedEvent.Type.SAVED,
+                                                currentTimestamp))
+                        .toList();
+        eventPublisher.publishEvent(
+                new PlaylistSavedEvent(savedPlaylists, PlaylistSavedEvent.Type.SAVED));
     }
 
     public void deleteSavedPlaylists(UserEntity user, Collection<Long> playlistIds) {
-        List<PlaylistEntity> playlists = playlistRepository.findAllById(playlistIds);
-        if (playlists.size() != playlistIds.size()) {
+        List<SavedPlaylistEntityKey> savedPlaylistEntityKeys =
+                playlistIds.stream()
+                        .map(playlistId -> new SavedPlaylistEntityKey(user.getId(), playlistId))
+                        .toList();
+        List<SavedPlaylistEntity> savedPlaylistEntities =
+                savedPlaylistRepository.findAllById(savedPlaylistEntityKeys);
+        if (savedPlaylistEntities.size() != playlistIds.size()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Some playlists do not exist");
         }
-        playlists.forEach(playlist -> playlist.removeSavedUser(user));
-        playlistRepository.saveAll(playlists);
+        savedPlaylistRepository.deleteAll(savedPlaylistEntities);
+        List<PlaylistSavedEvent.SavedPlaylist> savedPlaylists =
+                savedPlaylistEntities.stream()
+                        .map(
+                                playlist ->
+                                        new PlaylistSavedEvent.SavedPlaylist(
+                                                playlist.getId().getPlaylistId(),
+                                                PlaylistSavedEvent.Type.UNSAVED,
+                                                playlist.getSavedAt().getTime()))
+                        .toList();
+        eventPublisher.publishEvent(
+                new PlaylistSavedEvent(savedPlaylists, PlaylistSavedEvent.Type.UNSAVED));
     }
 }

@@ -1,7 +1,9 @@
 package me.cyberproton.ocean.features.playlist.event;
 
 import lombok.Getter;
+
 import me.cyberproton.ocean.features.playlist.entity.PlaylistEntity;
+
 import org.springframework.context.ApplicationEvent;
 
 @Getter

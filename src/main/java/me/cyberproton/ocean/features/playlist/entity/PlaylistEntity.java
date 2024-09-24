@@ -38,7 +38,7 @@ public class PlaylistEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "user_saved_playlists",
+            name = "user_saved_playlist",
             joinColumns = @JoinColumn(name = "playlist_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<UserEntity> savedUsers;
