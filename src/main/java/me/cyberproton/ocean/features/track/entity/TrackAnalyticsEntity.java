@@ -17,7 +17,7 @@ import java.util.Objects;
 @Setter
 @Entity(name = "track_analytics")
 public class TrackAnalyticsEntity {
-    @Id private Long id;
+    @Id @GeneratedValue private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     private TrackEntity track;

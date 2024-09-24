@@ -24,6 +24,9 @@ public interface TrackView {
     @Mapping(value = "artists.user.profile", fetch = FetchStrategy.MULTISET)
     List<BaseProfileView> getArtists();
 
+    @Mapping(value = "analytics.numberOfPlays")
+    Long getNumberOfPlays();
+
     @Mapping("analytics.popularity")
     Long getPopularity();
 }
