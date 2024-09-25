@@ -1,12 +1,12 @@
 package me.cyberproton.ocean.features.playlist.repository;
 
-import com.blazebit.persistence.spring.data.repository.EntityViewRepository;
 
-import me.cyberproton.ocean.features.playlist.dto.PlaylistView;
+import me.cyberproton.ocean.features.playlist.view.PlaylistView;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PlaylistViewRepository extends EntityViewRepository<PlaylistView, Long> {
+public interface PlaylistViewRepository extends JpaRepository<PlaylistView, Long> {
     Page<PlaylistView> findAllByOwnerId(Long ownerId, Pageable pageable);
 }

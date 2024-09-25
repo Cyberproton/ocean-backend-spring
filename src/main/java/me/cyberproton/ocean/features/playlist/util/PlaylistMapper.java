@@ -2,10 +2,10 @@ package me.cyberproton.ocean.features.playlist.util;
 
 import me.cyberproton.ocean.features.file.FileMapper;
 import me.cyberproton.ocean.features.playlist.dto.PlaylistResponse;
-import me.cyberproton.ocean.features.playlist.dto.PlaylistView;
 import me.cyberproton.ocean.features.playlist.entity.PlaylistDocument;
 import me.cyberproton.ocean.features.playlist.entity.PlaylistEntity;
 import me.cyberproton.ocean.features.playlist.repository.PlaylistTrackRepositoryForMapper;
+import me.cyberproton.ocean.features.playlist.view.PlaylistView;
 import me.cyberproton.ocean.util.PersistenceUtils;
 
 import org.mapstruct.Mapper;

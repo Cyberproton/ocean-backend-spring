@@ -23,6 +23,7 @@ import me.cyberproton.ocean.features.history.repository.HistoryRepository;
 import me.cyberproton.ocean.features.history.repository.HistoryViewRepository;
 import me.cyberproton.ocean.features.history.util.HistoryMapper;
 import me.cyberproton.ocean.features.playlist.entity.PlaylistEntity;
+import me.cyberproton.ocean.features.playlist.event.PlaylistPlayedEvent;
 import me.cyberproton.ocean.features.playlist.repository.PlaylistRepository;
 import me.cyberproton.ocean.features.track.dto.TrackPlayDto;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
@@ -178,8 +179,19 @@ public class HistoryService {
                             List.of(
                                     new TrackPlayDto(
                                             track.getId(),
+                                            track.getAlbum() != null
+                                                    ? track.getAlbum().getId()
+                                                    : null,
                                             numberOfPlays,
                                             System.currentTimeMillis()))));
+        }
+
+        if (request.type() == HistoryType.PLAYLIST) {
+            eventPublisher.publishEvent(
+                    new PlaylistPlayedEvent(
+                            List.of(
+                                    new PlaylistPlayedEvent.PlayedPlaylist(
+                                            playlist.getId(), System.currentTimeMillis()))));
         }
 
         return historyMapper.entityToResponse(history);

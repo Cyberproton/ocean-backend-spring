@@ -11,4 +11,5 @@ public record PlaylistResponse(
         String description,
         List<ImageResponse> covers,
         ProfileResponse owner,
-        Long totalTracks) {}
+        Long totalTracks,
+        Long popularity) {}

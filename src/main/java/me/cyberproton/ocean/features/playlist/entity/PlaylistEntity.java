@@ -43,6 +43,9 @@ public class PlaylistEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<UserEntity> savedUsers;
 
+    @OneToOne(mappedBy = "playlist", fetch = FetchType.LAZY)
+    private PlaylistAnalyticsEntity analytics;
+
     public void addAllPlaylistTracks(Set<PlaylistTrackEntity> playlistTracks) {
         if (this.playlistTracks == null) {
             setPlaylistTracks(new HashSet<>());

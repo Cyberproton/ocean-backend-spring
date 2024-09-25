@@ -3,10 +3,10 @@ package me.cyberproton.ocean.features.history.dto;
 import com.blazebit.persistence.view.EntityView;
 import com.blazebit.persistence.view.Mapping;
 
-import me.cyberproton.ocean.features.album.dto.AlbumView;
+import me.cyberproton.ocean.features.album.view.AlbumView;
 import me.cyberproton.ocean.features.history.entity.HistoryEntity;
 import me.cyberproton.ocean.features.history.entity.HistoryType;
-import me.cyberproton.ocean.features.playlist.dto.PlaylistView;
+import me.cyberproton.ocean.features.playlist.view.PlaylistView;
 import me.cyberproton.ocean.features.profile.dto.BaseProfileView;
 import me.cyberproton.ocean.features.track.view.TrackView;
 

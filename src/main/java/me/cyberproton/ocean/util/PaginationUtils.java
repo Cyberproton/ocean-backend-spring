@@ -1,6 +1,7 @@
 package me.cyberproton.ocean.util;
 
 import jakarta.annotation.Nullable;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,6 +10,7 @@ public class PaginationUtils {
             String baseUrl, long limit, long offset, long total) {
         String next = null;
         String previous = null;
+        
         if (offset + limit < total) {
             next = baseUrl + "?limit=" + limit + "&offset=" + (offset + limit);
         }

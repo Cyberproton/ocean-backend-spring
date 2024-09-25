@@ -1,4 +1,4 @@
-package me.cyberproton.ocean.features.playlist.dto;
+package me.cyberproton.ocean.features.playlist.view;
 
 import com.blazebit.persistence.view.EntityView;
 import com.blazebit.persistence.view.FetchStrategy;
@@ -30,4 +30,7 @@ public interface PlaylistView {
 
     @Mapping("size(playlistTracks)")
     Long getTotalTracks();
+
+    @Mapping("analytics.popularity")
+    Long getPopularity();
 }
