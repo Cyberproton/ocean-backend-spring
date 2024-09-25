@@ -3,11 +3,11 @@ package me.cyberproton.ocean.features.album.service;
 import lombok.AllArgsConstructor;
 
 import me.cyberproton.ocean.domain.BaseQuery;
-import me.cyberproton.ocean.features.album.dto.AlbumView;
 import me.cyberproton.ocean.features.album.entity.AlbumEntity;
 import me.cyberproton.ocean.features.album.repository.AlbumRepository;
 import me.cyberproton.ocean.features.album.repository.AlbumViewRepository;
 import me.cyberproton.ocean.features.album.util.AlbumMapper;
+import me.cyberproton.ocean.features.album.view.AlbumView;
 import me.cyberproton.ocean.features.user.UserEntity;
 
 import org.springframework.http.HttpStatus;

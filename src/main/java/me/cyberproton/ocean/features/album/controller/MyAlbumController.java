@@ -8,8 +8,8 @@ import me.cyberproton.ocean.annotations.V1ApiRestController;
 import me.cyberproton.ocean.config.AppUserDetails;
 import me.cyberproton.ocean.domain.BaseQuery;
 import me.cyberproton.ocean.features.album.dto.AddOrRemoveSavedAlbumsRequest;
-import me.cyberproton.ocean.features.album.dto.AlbumView;
 import me.cyberproton.ocean.features.album.service.UserAlbumService;
+import me.cyberproton.ocean.features.album.view.AlbumView;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
