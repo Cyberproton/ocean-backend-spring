@@ -1,4 +1,4 @@
-package me.cyberproton.ocean.features.album.dto;
+package me.cyberproton.ocean.features.album.view;
 
 import com.blazebit.persistence.view.EntityView;
 import com.blazebit.persistence.view.FetchStrategy;

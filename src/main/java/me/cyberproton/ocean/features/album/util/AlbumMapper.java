@@ -1,9 +1,9 @@
 package me.cyberproton.ocean.features.album.util;
 
 import me.cyberproton.ocean.features.album.dto.AlbumResponse;
-import me.cyberproton.ocean.features.album.dto.AlbumView;
 import me.cyberproton.ocean.features.album.entity.AlbumDocument;
 import me.cyberproton.ocean.features.album.entity.AlbumEntity;
+import me.cyberproton.ocean.features.album.view.AlbumView;
 import me.cyberproton.ocean.features.artist.ArtistMapper;
 import me.cyberproton.ocean.features.profile.dto.ProfileResponse;
 import me.cyberproton.ocean.util.PersistenceUtils;

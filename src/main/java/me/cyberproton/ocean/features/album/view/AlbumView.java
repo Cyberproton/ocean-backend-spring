@@ -1,4 +1,4 @@
-package me.cyberproton.ocean.features.album.dto;
+package me.cyberproton.ocean.features.album.view;
 
 import com.blazebit.persistence.view.EntityView;
 import com.blazebit.persistence.view.FetchStrategy;
@@ -24,4 +24,7 @@ public interface AlbumView extends BaseAlbumView {
 
     @Mapping(value = "tracks.artists.user.profile", fetch = FetchStrategy.MULTISET)
     List<ProfileViewWithAvatarAndBanner> getArtists();
+
+    @Mapping(value = "analytics.popularity")
+    Long getPopularity();
 }

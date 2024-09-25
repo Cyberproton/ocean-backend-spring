@@ -49,7 +49,8 @@ public class AlbumEntity {
             inverseJoinColumns = @JoinColumn(name = "copy_id", referencedColumnName = "id"))
     private Set<CopyrightEntity> copyrights;
 
-    @ManyToOne(fetch = FetchType.LAZY) private RecordLabelEntity recordLabel;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private RecordLabelEntity recordLabel;
 
     @OneToMany(mappedBy = "album")
     private Set<TrackEntity> tracks;
@@ -60,6 +61,9 @@ public class AlbumEntity {
             joinColumns = @JoinColumn(name = "album_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<UserEntity> savedUsers;
+
+    @OneToOne(mappedBy = "album", fetch = FetchType.LAZY)
+    private AlbumAnalyticsEntity analytics;
 
     public void addSavedUser(UserEntity user) {
         if (this.savedUsers == null) {

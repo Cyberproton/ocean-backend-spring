@@ -28,4 +28,5 @@ public class AlbumResponse {
     private RecordLabelResponse recordLabel;
     private Set<CopyrightResponse> copyrights;
     private List<ProfileResponse> artists;
+    private Long popularity;
 }
