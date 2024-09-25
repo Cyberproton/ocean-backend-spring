@@ -2,7 +2,7 @@ package me.cyberproton.ocean.features.track.view;
 
 import com.blazebit.persistence.view.*;
 
-import me.cyberproton.ocean.features.album.dto.AlbumViewWithCovers;
+import me.cyberproton.ocean.features.album.view.AlbumViewWithCovers;
 import me.cyberproton.ocean.features.profile.dto.BaseProfileView;
 import me.cyberproton.ocean.features.track.entity.TrackEntity;
 

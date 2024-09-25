@@ -1,5 +1,6 @@
 package me.cyberproton.ocean.features.track.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -56,7 +57,7 @@ public class TrackEntity {
             inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private Set<GenreEntity> genres;
 
-    @ManyToOne private AlbumEntity album;
+    @Nullable @ManyToOne private AlbumEntity album;
 
     @BatchSize(size = 20)
     @ManyToMany(cascade = CascadeType.ALL)
